@@ -122,6 +122,12 @@ module datapath(
     // input registers
     reg [7:0] a, b, c, x;
 
+    // hp registers
+    reg [3:0] p_hp, a_hp
+
+    // damage register
+    reg [3:0] damage;
+
     // output of the alu
     reg [7:0] alu_out;
     // alu input muxes

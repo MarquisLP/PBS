@@ -58,52 +58,40 @@ module control(
     always @(*)
     begin: enable_signals
         // By default make all our signals 0
-        ld_alu_out = 1'b0;
-        ld_a = 1'b0;
-        ld_b = 1'b0;
-        ld_c = 1'b0;
-        ld_x = 1'b0;
-        ld_r = 1'b0;
-        alu_select_a = 2'b0;
-        alu_select_b = 2'b0;
-        alu_op       = 1'b0;
+        ld_pm = 1'b0;
+        calc_ph = 1'b0;
+        apply_ad = 1'b0;
+        ld_am = 1'b0;
+        calc_ah = 1'b0;
+        apply_ph = 1'b0;
+        victory = 1'b0;
+        loss = 1'b0;
 
         case (current_state)
-            S_LOAD_A: begin
-                ld_a = 1'b1;
+            S_LOAD_PM: begin
+                ld_pm = 1'b1;
                 end
-            S_LOAD_B: begin
-                ld_b = 1'b1;
+            S_CALC_PH: begin
+                calc_ph = 1'b1;
                 end
-            S_LOAD_C: begin
-                ld_c = 1'b1;
+            S_APPLY_AH: begin
+                apply_ah = 1'b1;
                 end
-            S_LOAD_X: begin
-                ld_x = 1'b1;
+            S_LOAD_AM: begin
+                load_am = 1'b1;
                 end
-            S_CYCLE_0: begin // Do A <- A * x
-                  alu_select_a = 2'b00; // Select register A, which holds value (A)
-                  alu_select_b = 2'b11; // Select register X, which holds value (X)
-                  alu_op = 1'b1; 
-                  ld_alu_out = 1'b1; ld_a = 1'b1; 
-            end
-            S_CYCLE_1: begin //Do A <- (A*X) + (B)
-                 alu_select_a = 2'b00; // Select register A, which holds value (A*X)
-                 alu_select_b = 2'b01; // Select register B, which holds value (B)
-                 alu_op = 1'b0; 
-                 ld_alu_out = 1'b1; ld_a = 1'b1;
-            end
-				S_CYCLE_2: begin // Do A <- (A*x + B) * (X)
-                alu_select_a = 2'b00; // Select register A, which holds (A*X + B)
-                alu_select_b = 2'b11; // Select register X, which holds X
-                alu_op = 1'b1; // Do multiply (*) operation
-                ld_alu_out = 1'b1; ld_a = 1'b1; 
-				end
-				S_CYCLE_3: begin // Do R <- (A*x*x + B*x) + (C)
-                alu_select_a = 2'b00; // Select register A, which holds (A*x*x+B*x)
-                alu_select_b = 2'b10; // Select register C, which holds (C)
-                alu_op = 1'b0; // Do Add operation
-                ld_r = 1'b1; // store result in result register
+            S_CALC_AH: begin
+                calc_ah = 1'b1;
+                end
+            S_APPLY_PD: begin
+                apply_pd = 1'b1;
+                end
+            S_VICTORY: begin
+                loss = 1'b1;
+                end
+            S_LOSS: begin
+                loss = 1'b1;
+                end
             end
         // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
         endcase

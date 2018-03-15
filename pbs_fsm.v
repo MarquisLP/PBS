@@ -11,18 +11,14 @@ module control(
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_LOAD_A        = 5'd0,
-                S_LOAD_A_WAIT   = 5'd1,
-                S_LOAD_B        = 5'd2,
-                S_LOAD_B_WAIT   = 5'd3,
-                S_LOAD_C        = 5'd4,
-                S_LOAD_C_WAIT   = 5'd5,
-                S_LOAD_X        = 5'd6,
-                S_LOAD_X_WAIT   = 5'd7,
-                S_CYCLE_0       = 5'd8,
-                S_CYCLE_1       = 5'd9,
-                S_CYCLE_2       = 5'd10,
-					 S_CYCLE_3       = 5'd11; 
+    localparam  S_LOAD_PM         = 5'd0,
+                S_CALC_PH         = 5'd1,
+                S_APPLY_PD        = 5'd2,
+                S_LOAD_AM         = 5'd3,
+                S_CALC_AH         = 5'd4,
+                S_APPLY_PD        = 5'd5,
+                S_VICTORY         = 5'd6,
+                S_LOSS            = 5'd7;
     
     // Next state logic aka our state table
     always@(*)

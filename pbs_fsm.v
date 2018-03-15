@@ -113,7 +113,7 @@ module control(
     always@(posedge clk)
     begin: state_FFs
         if(!resetn)
-            current_state <= S_LOAD_A;
+            current_state <= S_LOAD_PM;
         else
             current_state <= next_state;
     end // state_FFS

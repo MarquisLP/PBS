@@ -13,7 +13,7 @@ module control(
     
     localparam  S_LOAD_PM         = 5'd0,
                 S_CALC_PH         = 5'd1,
-                S_APPLY_PD        = 5'd2,
+                S_APPLY_AD        = 5'd2,
                 S_LOAD_AM         = 5'd3,
                 S_CALC_AH         = 5'd4,
                 S_APPLY_PD        = 5'd5,

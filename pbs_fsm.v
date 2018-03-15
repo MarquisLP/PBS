@@ -2,6 +2,7 @@ module control(
     input clk,
     input resetn,
     input go,
+    input hp_is_zero,
 
     output reg  ld_pm, calc_ph, apply_ad, ld_am, calc_ah, apply_pd, victory, loss,
     output reg  ld_alu_out,
@@ -24,19 +25,31 @@ module control(
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_A: next_state = go ? S_LOAD_A_WAIT : S_LOAD_A; // Loop in current state until value is input
-                S_LOAD_A_WAIT: next_state = go ? S_LOAD_A_WAIT : S_LOAD_B; // Loop in current state until go signal goes low
-                S_LOAD_B: next_state = go ? S_LOAD_B_WAIT : S_LOAD_B; // Loop in current state until value is input
-                S_LOAD_B_WAIT: next_state = go ? S_LOAD_B_WAIT : S_LOAD_C; // Loop in current state until go signal goes low
-                S_LOAD_C: next_state = go ? S_LOAD_C_WAIT : S_LOAD_C; // Loop in current state until value is input
-                S_LOAD_C_WAIT: next_state = go ? S_LOAD_C_WAIT : S_LOAD_X; // Loop in current state until go signal goes low
-                S_LOAD_X: next_state = go ? S_LOAD_X_WAIT : S_LOAD_X; // Loop in current state until value is input
-                S_LOAD_X_WAIT: next_state = go ? S_LOAD_X_WAIT : S_CYCLE_0; // Loop in current state until go signal goes low
-                S_CYCLE_0: next_state = S_CYCLE_1;
-                S_CYCLE_1: next_state = S_CYCLE_2; // we will be done our two operations, start over after
-					 S_CYCLE_2: next_state = S_CYCLE_3; 
-                S_CYCLE_3: next_state = S_LOAD_A; 
-                default:   next_state = S_LOAD_A;
+                S_LOAD_PM: next_state = go ? S_CALC_PH : S_LOAD_PM;
+                S_S_CALC_PH: next_state = go ? S_APPLY_AD : S_CALC_PH;
+                S_APPLY_AD:
+                    begin
+                        if (hp_is_zero)
+                            next_state = S_VICTORY;
+                        else if (go)
+                            next_state = S_LOAD_AM;
+                        else:
+                            next_state = S_APPLY_AD;
+                    end
+                S_LOAD_AM: next_state = go ? S_CALC_AH : S_LOAD_AM;
+                S_CALC_AH: next_state = go ? S_APPLY_PD : S_CALC_AH;
+                S_APPLY_PD:
+                    begin
+                        if (hp_is_zero)
+                            next_state = S_LOSS;
+                        else if (go)
+                            next_state = S_LOAD_PM;
+                        else:
+                            next_state = S_APPLY_PD;
+                    end
+                S_VICTORY: next_state = reset_n ? S_LOAD_PM : S_VICTORY;
+                S_LOSS: next_state = reset_n ? S_LOAD_PM : S_LOSS;
+                default:   next_state = S_LOAD_PM;
         endcase
     end // state_table
    

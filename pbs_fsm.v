@@ -2,6 +2,7 @@ module control(
     input clk,
     input resetn,
     input go,
+    input hp_is_zero,
 
     output reg  ld_pm, calc_ph, apply_ad, ld_am, calc_ah, apply_pd, victory, loss,
     output reg  ld_alu_out,
@@ -11,36 +12,44 @@ module control(
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_LOAD_A        = 5'd0,
-                S_LOAD_A_WAIT   = 5'd1,
-                S_LOAD_B        = 5'd2,
-                S_LOAD_B_WAIT   = 5'd3,
-                S_LOAD_C        = 5'd4,
-                S_LOAD_C_WAIT   = 5'd5,
-                S_LOAD_X        = 5'd6,
-                S_LOAD_X_WAIT   = 5'd7,
-                S_CYCLE_0       = 5'd8,
-                S_CYCLE_1       = 5'd9,
-                S_CYCLE_2       = 5'd10,
-					 S_CYCLE_3       = 5'd11; 
+    localparam  S_LOAD_PM         = 5'd0,
+                S_CALC_PH         = 5'd1,
+                S_APPLY_AD        = 5'd2,
+                S_LOAD_AM         = 5'd3,
+                S_CALC_AH         = 5'd4,
+                S_APPLY_PD        = 5'd5,
+                S_VICTORY         = 5'd6,
+                S_LOSS            = 5'd7;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_A: next_state = go ? S_LOAD_A_WAIT : S_LOAD_A; // Loop in current state until value is input
-                S_LOAD_A_WAIT: next_state = go ? S_LOAD_A_WAIT : S_LOAD_B; // Loop in current state until go signal goes low
-                S_LOAD_B: next_state = go ? S_LOAD_B_WAIT : S_LOAD_B; // Loop in current state until value is input
-                S_LOAD_B_WAIT: next_state = go ? S_LOAD_B_WAIT : S_LOAD_C; // Loop in current state until go signal goes low
-                S_LOAD_C: next_state = go ? S_LOAD_C_WAIT : S_LOAD_C; // Loop in current state until value is input
-                S_LOAD_C_WAIT: next_state = go ? S_LOAD_C_WAIT : S_LOAD_X; // Loop in current state until go signal goes low
-                S_LOAD_X: next_state = go ? S_LOAD_X_WAIT : S_LOAD_X; // Loop in current state until value is input
-                S_LOAD_X_WAIT: next_state = go ? S_LOAD_X_WAIT : S_CYCLE_0; // Loop in current state until go signal goes low
-                S_CYCLE_0: next_state = S_CYCLE_1;
-                S_CYCLE_1: next_state = S_CYCLE_2; // we will be done our two operations, start over after
-					 S_CYCLE_2: next_state = S_CYCLE_3; 
-                S_CYCLE_3: next_state = S_LOAD_A; 
-                default:   next_state = S_LOAD_A;
+                S_LOAD_PM: next_state = go ? S_CALC_PH : S_LOAD_PM;
+                S_S_CALC_PH: next_state = go ? S_APPLY_AD : S_CALC_PH;
+                S_APPLY_AD:
+                    begin
+                        if (hp_is_zero)
+                            next_state = S_VICTORY;
+                        else if (go)
+                            next_state = S_LOAD_AM;
+                        else:
+                            next_state = S_APPLY_AD;
+                    end
+                S_LOAD_AM: next_state = go ? S_CALC_AH : S_LOAD_AM;
+                S_CALC_AH: next_state = go ? S_APPLY_PD : S_CALC_AH;
+                S_APPLY_PD:
+                    begin
+                        if (hp_is_zero)
+                            next_state = S_LOSS;
+                        else if (go)
+                            next_state = S_LOAD_PM;
+                        else:
+                            next_state = S_APPLY_PD;
+                    end
+                S_VICTORY: next_state = reset_n ? S_LOAD_PM : S_VICTORY;
+                S_LOSS: next_state = reset_n ? S_LOAD_PM : S_LOSS;
+                default:   next_state = S_LOAD_PM;
         endcase
     end // state_table
    
@@ -49,52 +58,40 @@ module control(
     always @(*)
     begin: enable_signals
         // By default make all our signals 0
-        ld_alu_out = 1'b0;
-        ld_a = 1'b0;
-        ld_b = 1'b0;
-        ld_c = 1'b0;
-        ld_x = 1'b0;
-        ld_r = 1'b0;
-        alu_select_a = 2'b0;
-        alu_select_b = 2'b0;
-        alu_op       = 1'b0;
+        ld_pm = 1'b0;
+        calc_ph = 1'b0;
+        apply_ad = 1'b0;
+        ld_am = 1'b0;
+        calc_ah = 1'b0;
+        apply_ph = 1'b0;
+        victory = 1'b0;
+        loss = 1'b0;
 
         case (current_state)
-            S_LOAD_A: begin
-                ld_a = 1'b1;
+            S_LOAD_PM: begin
+                ld_pm = 1'b1;
                 end
-            S_LOAD_B: begin
-                ld_b = 1'b1;
+            S_CALC_PH: begin
+                calc_ph = 1'b1;
                 end
-            S_LOAD_C: begin
-                ld_c = 1'b1;
+            S_APPLY_AH: begin
+                apply_ah = 1'b1;
                 end
-            S_LOAD_X: begin
-                ld_x = 1'b1;
+            S_LOAD_AM: begin
+                load_am = 1'b1;
                 end
-            S_CYCLE_0: begin // Do A <- A * x
-                  alu_select_a = 2'b00; // Select register A, which holds value (A)
-                  alu_select_b = 2'b11; // Select register X, which holds value (X)
-                  alu_op = 1'b1; 
-                  ld_alu_out = 1'b1; ld_a = 1'b1; 
-            end
-            S_CYCLE_1: begin //Do A <- (A*X) + (B)
-                 alu_select_a = 2'b00; // Select register A, which holds value (A*X)
-                 alu_select_b = 2'b01; // Select register B, which holds value (B)
-                 alu_op = 1'b0; 
-                 ld_alu_out = 1'b1; ld_a = 1'b1;
-            end
-				S_CYCLE_2: begin // Do A <- (A*x + B) * (X)
-                alu_select_a = 2'b00; // Select register A, which holds (A*X + B)
-                alu_select_b = 2'b11; // Select register X, which holds X
-                alu_op = 1'b1; // Do multiply (*) operation
-                ld_alu_out = 1'b1; ld_a = 1'b1; 
-				end
-				S_CYCLE_3: begin // Do R <- (A*x*x + B*x) + (C)
-                alu_select_a = 2'b00; // Select register A, which holds (A*x*x+B*x)
-                alu_select_b = 2'b10; // Select register C, which holds (C)
-                alu_op = 1'b0; // Do Add operation
-                ld_r = 1'b1; // store result in result register
+            S_CALC_AH: begin
+                calc_ah = 1'b1;
+                end
+            S_APPLY_PD: begin
+                apply_pd = 1'b1;
+                end
+            S_VICTORY: begin
+                loss = 1'b1;
+                end
+            S_LOSS: begin
+                loss = 1'b1;
+                end
             end
         // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
         endcase
@@ -104,7 +101,7 @@ module control(
     always@(posedge clk)
     begin: state_FFs
         if(!resetn)
-            current_state <= S_LOAD_A;
+            current_state <= S_LOAD_PM;
         else
             current_state <= next_state;
     end // state_FFS
@@ -124,6 +121,12 @@ module datapath(
     
     // input registers
     reg [7:0] a, b, c, x;
+
+    // hp registers
+    reg [3:0] p_hp, a_hp
+
+    // damage register
+    reg [3:0] damage;
 
     // output of the alu
     reg [7:0] alu_out;

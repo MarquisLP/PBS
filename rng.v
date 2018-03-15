@@ -1,20 +1,21 @@
-module pbs(HEX0, KEY);
+module pbs(HEX0, KEY, SW);
  
  // Inputs
- input HEX0;
+ input [6:0]HEX0;
  input [3:0] KEY;
+ input [9:0] SW;
  reg clock;
  reg reset;
  
  // Outputs
- wire [12:0] rnd;
+ wire [4:0] rnd;
  
  // Instantiate the Unit Under Test (UUT)
- LFSR uut (
-  .clock(KEY[0]), 
-  .reset(reset), 
-  .rnd(rnd)
- );
+ fibonacci_lfsr_nbit rng(
+								.clk(KEY[0]),
+								.rst_n(SW[1]),
+								.data(rnd[4:0])
+								);
   
 // initial begin
 //  clock = 0;
@@ -22,75 +23,46 @@ module pbs(HEX0, KEY);
 //   #50 clock = ~clock;
 //  end
    
- initial begin
-  // Initialize Inputs
-   
-  reset = 0;
- 
-  // Wait 100 ns for global reset to finish
-  #100;
-      reset = 1;
-  #200;
-  reset = 0;
-  // Add stimulus here
- 
- end
+
  
   hex_display hex0(
-     .IN(rnd[3:0]),
+     .IN(4'b0000),
 	  .OUT(HEX0)
   );
   
   
 endmodule
 
+module fibonacci_lfsr_nbit
+   #(parameter BITS = 5)
+   (
+    input             clk,
+    input             rst_n,
 
-
-module LFSR (
-    input clock,
-    input reset,
-    output [12:0] rnd 
+    output reg [4:0] data
     );
- 
-	wire feedback = random[12] ^ random[3] ^ random[2] ^ random[0]; 
- 
-	reg [12:0] random, random_next, random_done;
-	reg [3:0] count, count_next; //to keep track of the shifts
- 
-	always @ (posedge clock or posedge reset)
-	begin
-		if (reset)
-			begin
-				random <= 13'hF; //An LFSR cannot have an all 0 state, thus reset to FF
-				count <= 0;
-			end 
-		else
-			begin
-				random <= random_next;
-				count <= count_next;
-			end
-	end
- 
-	always @ (*)
-	begin
-		random_next = random; //default state stays the same
-		count_next = count;
-   
-		random_next = {random[11:0], feedback}; //shift left the xor'd every posedge clock
-		count_next = count + 1;
- 
-		if (count == 13'hF)
-			begin
-				count = 0;
-				random_done = random; //assign the random number to output after 13 shifts
-			end
-  
-	end
- 
- 
-	assign rnd = random_done;
- 
+
+   reg [4:0] data_next;
+   always@(negedge clk)
+		begin
+      data_next <= data;
+      repeat(BITS) 
+		begin
+         data_next <= {(data_next[4]^data_next[1]), data_next[4:1]};
+      end
+   end
+
+   always @(posedge clk or negedge rst_n) begin
+      if(!rst_n)
+         data <= 5'h1f;
+      else
+		
+         data <= data_next;
+   end
+
 endmodule
+
+
 
 module hex_display(IN, OUT);
     input [3:0] IN;

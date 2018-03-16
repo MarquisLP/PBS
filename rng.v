@@ -52,11 +52,11 @@ module rng(HEX0,HEX1,KEY,SW, LEDR,LEDG);
    assign LEDR[0] = (randomout > 'd7);
 	assign LEDG[0] = (randomout <= 'd7);
 	
-	always@(*)
+	always@(posedge KEY[0])
 	begin
 		begin
 	    if (randomout > 'd7)
-		     hp <= hp - 4'b0001;
+		     hp <= hp - 1'b1;
 		end
 	end
 	

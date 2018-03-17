@@ -1,0 +1,112 @@
+CSCB58 Project File: Summer 2017
+
+Team Member A
+-------------
+First Name: Mark
+Last Name: Padilla
+Student Number: 1002463069
+UofT E-mail Address: markjj.padilla@mail.utoronto.ca
+
+
+Team Member B
+-------------
+First Name: Minhaz
+Last Name: Khan
+Student Number: 1002399852
+UofT E-mail Address: minhaz.khan@mail.utoronto.ca
+
+Team Member C (Optional)
+-------------
+First Name: 
+Last Name:
+Student Number:
+UofT E-mail Address:
+
+Team Member D (Optional)
+-------------
+First Name: 
+Last Name:
+Student Number:
+UofT E-mail Address:
+
+Project Details
+---------------
+Project Title:Pokemon Battle Simulator
+
+Project Description: An arcade-style Pokemon RPG battle, player vs AI.
+
+Features:
+* Hit rates decided by RNG
+    * HP displayed on hexes
+    * Uses counters to decrease HP upon hit
+* Player has one Pokemon
+    * Stretch goal - player has up to six Pokemon, and can switch  either upon fainting or via switches
+* Pokemon has one attack that does 1 damage
+    * Stretch goal - multiple moves with varying damage points
+* AI also has one Pokemon, and is also subject to RNG for hit rate
+    * Stretch goal - AI has six Pokemon, which results in a typical 6 on 6 Pokemon battle
+* Stretch goal - type advantages: Fire vs Water vs Grass, 2x damage for super effective, 1/2 damage for not very effective
+* Stretch goal - battle music using speakers
+    * Stretch stretch goal - players can choose between multiple songs before entering battle
+
+Video URL:
+
+Code URL (please upload a copy of this file to your repository at the end of the project as well, it will
+serve as a useful resource for future development):
+
+
+Proposal
+--------
+
+What do you plan to have completed by the end of the first lab session?:
+RNG for the player's and AI's attack hit rates. Damage counter. HP hexes.
+
+What do you plan to have completed by the end of the second lab session?: FSM for battle flow. Datapath/ALU for HP and damage calculations. If there is extra time, begin stretch goals: multiple attacks, multiple Pokemon for player and AI.
+,
+
+What do you plan to have completed by the end of the third lab session?:
+Stretch goals: music/speakers, music selection before battle
+
+What is your backup plan if things don't work out as planned?
+Just get basic 1v1 battle working, possibly with one song playing.
+
+What hardware will you need beyond the DE2 board 
+(be sure to e-mail Brian if it's anything beyond the basics to make sure there's enough to go around)
+Speakers, and possibly breadboards for LEDs that represent the Pokemon.
+
+Motivations
+-----------
+How does this project relate to the material covered in CSCB58?:
+RNG and damage counters make use of sequential circuits. We use an FSM to control battleflow, registers for keeping track of Pokemon and their HP, and an ALU for calculations.
+
+Why is this project interesting/cool (for CSCB58 students, and for non CSCB58 students?):
+Because Pokemon has been integral part of our generation, and making a battle simulator is a great way to pay homage to our childhood.
+
+Why did you personally choose this project?:
+Pokemon was a big part of our childhood.
+
+Attributions
+------------
+Provide a complete list of any external resources your project used (attributions should also be included in your
+code).
+
+Verilog RNG module using Galois Ring Oscillators (GARO), by StanOverflow:
+https://stackoverflow.com/a/26280438
+
+Update
+-------
+
+Week 1: We spent most of our time trying to implement a random number generator
+module. We tried 3 different implementations that we found online, and only one of
+them ended up working, but we had to make some modifications to get it to work with
+our project. Once that was done, we tested our 'hit accuracy' concept by writing
+some test code that would turn an red LED on if the RNG module outputted a number
+above a certain value, or turn a green LED on if it was below that value. Because
+of this test, we decided to make these 'hit-or-miss' indicator LEDs part of the
+final product.
+Apart from that, we also tested the idea of HP by hooking up a 4-bit reg output to
+a hex display, and having the value on the hex decrement by 1d each time the RNG
+module outputted a number above a certain value. For some reason, our hex display
+code wouldn't work, so we spent about half our lab time digging through old lab
+code to fix it. In retrospect, it's a good thing we caught this now rather than
+later, as making the actual HP counters will now be less troublesome.

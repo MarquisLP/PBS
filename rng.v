@@ -64,6 +64,8 @@ endmodule
 
 
 
+// RNG module using Galois Ring Oscillators (GARO), by StanOverflow:
+// https://stackoverflow.com/a/26280438
 module GARO (input stop, clk, reset, output random);
 
 	(* OPTIMIZE="OFF" *)                    //stop *xilinx* tools optimizing this away

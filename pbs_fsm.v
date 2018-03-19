@@ -13,35 +13,37 @@ module control(
     reg [5:0] current_state, next_state; 
     
     localparam  S_LOAD_PM         = 5'd0,
-                S_P_ATTACK        = 5'd1,
-                S_LOAD_AM         = 5'd2,
-                S_AI_ATTACK       = 5'd3,
-                S_VICTORY         = 5'd4,
-                S_LOSS            = 5'd5;
+                S_CALC_P_ATTACK   = 5'd1,
+                S_UPDATE_AI_HP    = 5'd2,
+                S_CALC_AI_ATTACK  = 5'd3,
+                S_UPDATE_P_HP     = 5'd4,
+                S_VICTORY         = 5'd5,
+                S_LOSS            = 5'd6;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_PM: next_state = go ? S_CALC_PH : S_LOAD_PM;
-                S_P_ATTACK:
+                S_LOAD_PM: next_state = go ? S_CALC_P_ATTACK : S_LOAD_PM;
+                S_CALC_P_ATTACK: next_state = go ? S_UPDATE_AI_HP : S_CALC_P_ATTACK;
+                S_UPDATE_AI_HP:
                     begin
                         if (hp_is_zero)
                             next_state = S_VICTORY;
                         else if (go)
-                            next_state = S_LOAD_AM;
+                            next_state = S_CALC_AI_ATTACK;
                         else
-                            next_state = S_P_ATTACK;
+                            next_state = S_UPDATE_AI_HP;
                     end
-                S_LOAD_AM: next_state = go ? S_AI_ATTACK : S_LOAD_AM;
-                S_AI_ATTACK:
+                S_CALC_AI_ATTACK: next_state = go ? S_UPDATE_P_HP : S_CALC_P_ATTACK;
+                S_UPDATE_P_HP:
                     begin
                         if (hp_is_zero)
                             next_state = S_LOSS;
                         else if (go)
                             next_state = S_LOAD_PM;
                         else
-                            next_state = S_AI_ATTACK;
+                            next_state = S_UPDATE_P_HP;
                     end
                 S_VICTORY: next_state = reset_n ? S_LOAD_PM : S_VICTORY;
                 S_LOSS: next_state = reset_n ? S_LOAD_PM : S_LOSS;
@@ -54,27 +56,29 @@ module control(
     always @(*)
     begin: enable_signals
         // By default make all our signals 0
-        ld_pm = 1'b0;
-        ld_am = 1'b0;
-        apply_damage = 1'b0;
+        calc_damage = 1'b0;
+        active_trainer = 1'b0;
         target = 1'b0;
+        apply_damage = 1'b0;
 
         case (current_state)
-            S_LOAD_PM: begin
-                ld_move = 1'b1;
-                active_trainer = 1'b0 // 0 sets player as the active trainer
-                end
-            S_P_ATTACK: begin
-                apply_damage = 1'b1;
+            S_CALC_P_ATTACK: begin
+                calc_damage = 1'b1;
+                active_trainer = 1'b0; // 0 selects player as the active trainer
                 target = 1'b1; // 1 selects the AI's Pokemon as target
                 end
-            S_LOAD_AM: begin
-                ld_move = 1'b1;
-                active_trainer = 1'b1 // 1 sets AI as the active trainer
-                end
-            S_AI_ATTACK: begin
+            S_UPDATE_AI_HP: begin
+                target = 1'b1;
                 apply_damage = 1'b1;
+                end
+            S_CALC_AI_ATTACK: begin
+                calc_damage = 1'b1;
+                active_trainer = 1'b1; // 1 selects AI as the active trainer
                 target = 1'b0; // 0 selects the player's Pokemon as target
+                end
+            S_UPDATE_P_HP: begin
+                target = 1'b0;
+                apply_damage = 1'b1;
                 end
             S_VICTORY: begin
                 victory = 1'b1;

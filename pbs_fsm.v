@@ -2,7 +2,8 @@ module control(
     input clk,
     input reset_n,
     input go,
-    input hp_is_zero,
+    input p_hp,
+    input ai_hp,
 
     output ld_move, active_trainer, apply_damage, target,
     output reg  ld_alu_out,
@@ -28,7 +29,7 @@ module control(
                 S_CALC_P_ATTACK: next_state = go ? S_UPDATE_AI_HP : S_CALC_P_ATTACK;
                 S_UPDATE_AI_HP:
                     begin
-                        if (hp_is_zero)
+                        if (ai_hp == 0)
                             next_state = S_VICTORY;
                         else if (go)
                             next_state = S_CALC_AI_ATTACK;
@@ -38,7 +39,7 @@ module control(
                 S_CALC_AI_ATTACK: next_state = go ? S_UPDATE_P_HP : S_CALC_P_ATTACK;
                 S_UPDATE_P_HP:
                     begin
-                        if (hp_is_zero)
+                        if (p_hp == 0)
                             next_state = S_LOSS;
                         else if (go)
                             next_state = S_LOAD_PM;

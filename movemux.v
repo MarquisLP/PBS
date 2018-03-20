@@ -1,4 +1,4 @@
-module move_mux(pl_move, dmg, accu)
+module move_mux(pl_move, dmg, accu);
 	input [1:0]pl_move;
 	output reg [3:0] dmg;
 	output reg [3:0] accu;

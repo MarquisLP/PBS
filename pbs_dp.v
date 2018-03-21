@@ -11,7 +11,7 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	
 	wire [1:0] airng_wire;
 	wire [3:0] moveaccurng_wire;
-	wire [1:0]actr_wire;
+	wire [1:0] actr_wire;
 	wire [3:0] dmg_wire;
 	wire [3:0] accu_wire;
 	wire [3:0] curr_hp;
@@ -111,9 +111,9 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	
 	always @(posedge clk)
 	begin
-	    if (accuWire >= airng_wire)
+	    if (accu_wire >= airng_wire)
 		     assign enable_alu = calc_dmg;
-	    else:
+	    else
 		     assign enable_alu = 1'b0;
 	end
 			

@@ -4,8 +4,10 @@ module control(
     input go,
     input p_hp,
     input ai_hp,
-
-    output ld_move, active_trainer, apply_damage, target,
+	 output reg calc_damage,
+	 output reg victory,
+	 output reg loss,
+    output reg ld_move, active_trainer, apply_damage, target,
     output reg  ld_alu_out,
     output reg [1:0]  alu_select_a, alu_select_b,
     output reg alu_op

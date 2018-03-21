@@ -11,12 +11,12 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	
 	wire [1:0] airng_wire;
 	wire [3:0] moveaccurng_wire;
-	wire [1:0] actr_wire;
+	reg [1:0] actr_wire;
 	wire [3:0] dmg_wire;
 	wire [3:0] accu_wire;
-	wire [3:0] curr_hp;
+	reg [3:0] curr_hp;
 	wire [3:0] newhp_wire;
-	wire enable_alu;
+	reg enable_alu;
 	
 	GARO AI_rng1(
 	         .stop(1'b1),
@@ -70,12 +70,12 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	begin
 		case (actr) // start case statement
 		1'b0:
-			assign actr_wire = p_move;
+			 actr_wire <= p_move;
 		1'b1: 
-			assign actr_wire = airng_wire;
+			 actr_wire <= airng_wire;
 		
 		default: 
-			assign actr_wire = p_move; 
+			 actr_wire <= p_move; 
 		endcase
    end
 	
@@ -83,11 +83,11 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	begin
 		case (target) // start case statement
 		1'b0: 
-			assign curr_hp = p_hp;
+				curr_hp <= p_hp;
 		1'b1: 
-			assign curr_hp = AI_hp;
+				curr_hp <= AI_hp;
 		default: 
-			assign curr_hp = p_hp;
+				curr_hp <= p_hp;
 		endcase
    end
 	
@@ -112,9 +112,9 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	always @(posedge clk)
 	begin
 	    if (accu_wire >= airng_wire)
-		     assign enable_alu = calc_dmg;
+		     enable_alu <= calc_dmg;
 	    else
-		     assign enable_alu = 1'b0;
+		     enable_alu <= 1'b0;
 	end
 			
 	

@@ -18,6 +18,11 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	wire [3:0] newhp_wire;
 	reg enable_alu;
 	
+	initial begin
+	    p_hp <= 4'b1001;
+		 AI_hp <= 4'b1001;
+	end
+	
 	GARO AI_rng1(
 	         .stop(1'b1),
 				.clk(clk),
@@ -60,7 +65,7 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 				.random(moveaccurng_wire[3])
 				);
 	
-	movemux mm1(
+	move_mux mm1(
 				.pl_move(actr_wire),
 				.dmg(dmg_wire),
 				.accu(accu_wire)
@@ -81,14 +86,19 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	
 	always @(posedge clk) // Current HP mux
 	begin
-		case (target) // start case statement
-		1'b0: 
-				curr_hp <= p_hp;
-		1'b1: 
-				curr_hp <= AI_hp;
-		default: 
-				curr_hp <= p_hp;
-		endcase
+	   begin
+	   if (app_dmg)
+		   begin
+				case (target) // start case statement
+				1'b0: 
+						curr_hp <= p_hp;
+				1'b1: 
+						curr_hp <= AI_hp;
+				default: 
+						curr_hp <= p_hp;
+				endcase
+			end
+	   end
    end
 	
 	always @(posedge clk) // New HP mux

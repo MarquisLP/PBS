@@ -15,8 +15,7 @@ module pbs(SW, LEDR, LEDG, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
 	
-	reg [3:0] hp1 = 4'b1001;
-	reg [3:0] hp2 = 4'b0101;
+
 	
 	wire target_wire;
 	wire actr_wire;

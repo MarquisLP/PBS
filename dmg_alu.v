@@ -9,7 +9,12 @@ module dmg_alu(dmg, curr_hp, enable, clk, new_hp);
 	begin
 		begin
 	    if (enable)
-				new_hp <= curr_hp - dmg;
+		      begin
+				if (dmg > curr_hp)
+				    new_hp <= 0;
+			   else
+				    new_hp <= curr_hp - dmg;
+				end
 		end
 	end
 	

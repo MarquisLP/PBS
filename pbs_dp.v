@@ -23,6 +23,12 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 		 AI_hp <= 4'b1001;
 	end
 	
+	always@(posedge clk)
+	begin: hp_reset
+	   if(!rst)
+          p_hp <= 4'b1001;
+		    AI_hp <= 4'b1001;;
+	end
 	GARO AI_rng1(
 	         .stop(1'b1),
 				.clk(clk),

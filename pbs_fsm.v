@@ -58,6 +58,8 @@ module control(
         active_trainer = 1'b0;
         target = 1'b0;
         apply_damage = 1'b0;
+		  victory = 1'b0;
+		  loss = 1'b0;
 
         case (current_state)
             S_CALC_P_ATTACK: begin

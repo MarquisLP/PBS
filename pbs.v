@@ -138,7 +138,7 @@ module hex_display(IN, ONES_DGT, TENS_DGT);
 				 end
 			4'b1011: begin
 			    TENS_DGT = 7'b1111001;
-				 TENS_DGT = 7'b1111001;
+				 ONES_DGT = 7'b1111001;
 			    end
 			4'b1100: begin
 			    TENS_DGT = 7'b1111001;

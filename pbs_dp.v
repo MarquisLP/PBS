@@ -23,12 +23,6 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 		 AI_hp <= 4'b1001;
 	end
 	
-	always@(posedge clk)
-	begin: hp_reset
-	   if(!rst)
-          p_hp <= 4'b1001;
-		    AI_hp <= 4'b1001;;
-	end
 	GARO AI_rng1(
 	         .stop(1'b1),
 				.clk(clk),
@@ -109,12 +103,22 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	
 	always @(posedge clk) // New HP mux
 	begin
-		case (target) // start case statement
-		1'b0: p_hp = newhp_wire;
-		1'b1: AI_hp = newhp_wire;
-		default: 
-			p_hp = newhp_wire;
-		endcase
+	   begin
+	   if(!rst)
+		    begin
+          p_hp <= 4'b1001;
+		    AI_hp <= 4'b1001;
+			 end
+	   else
+			begin
+				case (target) // start case statement
+				1'b0: p_hp = newhp_wire;
+				1'b1: AI_hp = newhp_wire;
+				default: 
+					p_hp = newhp_wire;
+				endcase
+			end
+	   end
    end
 	
 	dmg_alu dmg1(

@@ -1,16 +1,16 @@
-module pbs(SW, LEDR, LEDG, KEY, HEX0,HEX2,HEX4,HEX6);
+module pbs(SW, LEDR, LEDG, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
 	input [17:0] SW;
 	output [17:0] LEDR;
 	output [7:0]  LEDG;
 	input [3:0] KEY;
 	output [6:0] HEX0;
-	//output [6:0] HEX1;
+	output [6:0] HEX1;
 	output [6:0] HEX2;
-	//output [6:0] HEX3;
+	output [6:0] HEX3;
 	output [6:0] HEX4;
-	//output [6:0] HEX5;
+	output [6:0] HEX5;
 	output [6:0] HEX6;
-	//output [6:0] HEX7;
+	output [6:0] HEX7;
 	
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
@@ -60,52 +60,107 @@ module pbs(SW, LEDR, LEDG, KEY, HEX0,HEX2,HEX4,HEX6);
 	
 	hex_display dmg_disp(
 							.IN(move_disp_wire[3:0]), 
-							.OUT(HEX0[6:0])
+							.ONES_DGT(HEX0[6:0]), 
+							.TENS_DGT(HEX1[6:0])
 							);
 	
 	hex_display accu_disp(
 							.IN(move_disp_wire[7:4]), 
-							.OUT(HEX2[6:0])
+							.ONES_DGT(HEX2[6:0]), 
+							.TENS_DGT(HEX3[6:0])
 							);
 	
 	hex_display p_hp_disp(
 							.IN(p_hp_wire), 
-							.OUT(HEX4[6:0])
+							.ONES_DGT(HEX4[6:0]), 
+							.TENS_DGT(HEX5[6:0])
 							);
 	
 	hex_display ai_hp_disp(
 							.IN(ai_hp_wire), 
-							.OUT(HEX6[6:0])
+							.ONES_DGT(HEX6[6:0]), 
+							.TENS_DGT(HEX7[6:0])
 							);
 	 
 	
 endmodule
 
-module hex_display(IN, OUT);
+module hex_display(IN, ONES_DGT, TENS_DGT);
     input [3:0] IN;
-	 output reg [7:0] OUT;
+	 output reg [7:0] ONES_DGT, TENS_DGT;
 	 
 	 always @(*)
 	 begin
 		case(IN[3:0])
-			4'b0000: OUT = 7'b1000000;
-			4'b0001: OUT = 7'b1111001;
-			4'b0010: OUT = 7'b0100100;
-			4'b0011: OUT = 7'b0110000;
-			4'b0100: OUT = 7'b0011001;
-			4'b0101: OUT = 7'b0010010;
-			4'b0110: OUT = 7'b0000010;
-			4'b0111: OUT = 7'b1111000;
-			4'b1000: OUT = 7'b0000000;
-			4'b1001: OUT = 7'b0011000;
-			4'b1010: OUT = 7'b0001000;
-			4'b1011: OUT = 7'b0000011;
-			4'b1100: OUT = 7'b1000110;
-			4'b1101: OUT = 7'b0100001;
-			4'b1110: OUT = 7'b0000110;
-			4'b1111: OUT = 7'b0001110;
+			4'b0000:begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b1000000;
+		       end
+			4'b0001: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b1111001;
+				 end
+			4'b0010: begin
+				 TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0100100;
+			    end
+			4'b0011: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0110000;
+				 end
+			4'b0100: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0011001;
+				 end
+			4'b0101: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0010010;
+				 end
+			4'b0110: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0000010;
+				 end
+			4'b0111: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b1111000;
+				 end
+			4'b1000: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0000000;
+				 end
+			4'b1001: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b0011000;
+				 end
+			4'b1010: begin
+			    TENS_DGT = 7'b1111001;
+			    ONES_DGT = 7'b1000000;
+				 end
+			4'b1011: begin
+			    TENS_DGT = 7'b1111001;
+				 TENS_DGT = 7'b1111001;
+			    end
+			4'b1100: begin
+			    TENS_DGT = 7'b1111001;
+			    ONES_DGT = 7'b0100100;
+				 end
+			4'b1101: begin
+			    TENS_DGT = 7'b1111001;
+			    ONES_DGT = 7'b0110000;
+				 end
+			4'b1110: begin
+			    TENS_DGT = 7'b1111001;
+			    ONES_DGT = 7'b0011001;
+				 end
+			4'b1111: begin
+			    TENS_DGT = 7'b1111001;
+				 ONES_DGT = 7'b0010010;
+			    end
 			
-			default: OUT = 7'b0111111;
+			default: begin
+			    TENS_DGT = 7'b1000000;
+			    ONES_DGT = 7'b1000000;
+				 end
 		endcase
 
 	end

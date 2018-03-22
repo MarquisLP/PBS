@@ -45,8 +45,6 @@ module control(
                         else
                             next_state = S_UPDATE_P_HP;
                     end
-                S_VICTORY: next_state = reset_n ? S_LOAD_PM : S_VICTORY;
-                S_LOSS: next_state = reset_n ? S_LOAD_PM : S_LOSS;
                 default:   next_state = S_LOAD_PM;
         endcase
     end // state_table

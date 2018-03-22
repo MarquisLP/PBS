@@ -19,8 +19,8 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	reg enable_alu;
 	
 	initial begin
-	    p_hp <= 4'b1001;
-		 AI_hp <= 4'b1001;
+	    p_hp <= 4'b1111;
+		 AI_hp <= 4'b1111;
 	end
 	
 	GARO AI_rng1(
@@ -106,8 +106,8 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	   begin
 	   if(!rst)
 		    begin
-          p_hp <= 4'b1001;
-		    AI_hp <= 4'b1001;
+          p_hp <= 4'b1111;
+		    AI_hp <= 4'b1111;
 			 end
 	   else
 			begin

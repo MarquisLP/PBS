@@ -43,7 +43,7 @@ module control(
 									    next_state = S_VIEW_UPDATED_AI_HP;
 								end
 						  end
-                S_CALC_AI_ATTACK: S_UPDATE_P_HP;
+                S_CALC_AI_ATTACK: next_state = S_UPDATE_P_HP;
                 S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_AI_HP;
 					 S_VIEW_UPDATED_P_HP:
 					     begin

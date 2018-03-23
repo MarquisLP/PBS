@@ -15,36 +15,52 @@ module control(
     localparam  S_LOAD_PM         = 5'd0,
                 S_CALC_P_ATTACK   = 5'd1,
                 S_UPDATE_AI_HP    = 5'd2,
-                S_CALC_AI_ATTACK  = 5'd3,
-                S_UPDATE_P_HP     = 5'd4,
-                S_VICTORY         = 5'd5,
-                S_LOSS            = 5'd6;
+					 S_VIEW_UPDATED_AI_HP = 5'd3,
+                S_CALC_AI_ATTACK  = 5'd4,
+                S_UPDATE_P_HP     = 5'd5,
+					 S_VIEW_UPDATED_P_HP = 5'd6,
+                S_VICTORY         = 5'd7,
+                S_LOSS            = 5'd8;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
                 S_LOAD_PM: next_state = go ? S_CALC_P_ATTACK : S_LOAD_PM;
-                S_CALC_P_ATTACK: next_state = go ? S_UPDATE_AI_HP : S_CALC_P_ATTACK;
-                S_UPDATE_AI_HP:
-                    begin
-                        if (ai_hp == 0)
-                            next_state = S_VICTORY;
-                        else if (go)
-                            next_state = S_CALC_AI_ATTACK;
-                        else
-                            next_state = S_UPDATE_AI_HP;
-                    end
-                S_CALC_AI_ATTACK: next_state = go ? S_UPDATE_P_HP : S_CALC_P_ATTACK;
-                S_UPDATE_P_HP:
-                    begin
-                        if (p_hp == 0)
-                            next_state = S_LOSS;
-                        else if (go)
-                            next_state = S_LOAD_PM;
-                        else
-                            next_state = S_UPDATE_P_HP;
-                    end
+                S_CALC_P_ATTACK: next_state = S_UPDATE_AI_HP;
+                S_UPDATE_AI_HP: next_state = S_VIEW_UPDATED_AI_HP;
+					 S_VIEW_UPDATED_AI_HP:
+					     begin
+						      begin
+						          if (go)
+									    begin
+									    if (ai_hp == 4'b0000)
+											next_state = S_VICTORY;
+										 else
+											next_state = S_CALC_AI_ATTACK; 
+										 end
+								    else
+									    next_state = S_VIEW_UPDATED_AI_HP;
+								end
+						  end
+                S_CALC_AI_ATTACK: S_UPDATE_P_HP;
+                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_AI_HP;
+					 S_VIEW_UPDATED_P_HP:
+					     begin
+						      begin
+						          if (go)
+									    begin
+									    if (p_hp == 4'b0000)
+											next_state = S_LOSS;
+										 else
+											next_state = S_LOAD_PM; 
+										 end
+								    else
+									    next_state = S_VIEW_UPDATED_P_HP;
+								end
+						  end
+                S_VICTORY: next_state = S_VICTORY;
+					 S_LOSS: next_state = S_LOSS;
                 default:   next_state = S_LOAD_PM;
         endcase
     end // state_table

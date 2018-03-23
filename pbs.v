@@ -1,8 +1,9 @@
-module pbs(SW, LEDR, LEDG, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
+module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
 	input [17:0] SW;
 	output [17:0] LEDR;
 	output [7:0]  LEDG;
 	input [3:0] KEY;
+	input CLOCK_50;
 	output [6:0] HEX0;
 	output [6:0] HEX1;
 	output [6:0] HEX2;
@@ -14,8 +15,8 @@ module pbs(SW, LEDR, LEDG, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
 	
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
-	
-
+	wire go;
+	assign go = ~KEY[3];
 	
 	wire target_wire;
 	wire actr_wire;
@@ -31,16 +32,16 @@ module pbs(SW, LEDR, LEDG, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
 				  .actr(actr_wire),
 				  .calc_dmg(calc_dmg_wire),
 				  .app_dmg(apply_dmg_wire),
-				  .clk(KEY[0]),
+				  .clk(CLOCK_50),
 				  .rst(SW[9]),
 				  .p_hp(p_hp_wire),
 				  .AI_hp(ai_hp_wire)
 				  );
    
 	control fsm (
-       .clk(KEY[0]),
+       .clk(CLOCK_50),
        .reset_n(SW[9]),
-       .go(1'b1),
+       .go(go),
        .p_hp(p_hp_wire),
        .ai_hp(ai_hp_wire),
 	    .calc_damage(calc_dmg_wire),

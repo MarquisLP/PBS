@@ -78,24 +78,19 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 			 actr_wire <= p_move;
 		1'b1: 
 			 actr_wire <= airng_wire;
-		
-		default: 
-			 actr_wire <= p_move; 
 		endcase
    end
 	
 	always @(posedge clk) // Current HP mux
 	begin
 	   begin
-	   if (app_dmg)
+	   if (calc_dmg)
 		   begin
 				case (target) // start case statement
 				1'b0: 
 						curr_hp <= p_hp;
 				1'b1: 
 						curr_hp <= AI_hp;
-				default: 
-						curr_hp <= p_hp;
 				endcase
 			end
 	   end
@@ -111,12 +106,13 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 			 end
 	   else
 			begin
-				case (target) // start case statement
-				1'b0: p_hp = newhp_wire;
-				1'b1: AI_hp = newhp_wire;
-				default: 
-					p_hp = newhp_wire;
-				endcase
+			   if (app_dmg)
+				   begin
+					case (target) // start case statement
+					   1'b0: p_hp <= newhp_wire;
+					   1'b1: AI_hp <= newhp_wire;
+					endcase
+				end
 			end
 	   end
    end
@@ -124,14 +120,14 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 	dmg_alu dmg1(
 			.dmg(dmg_wire),
 			.curr_hp(curr_hp),
-			.enable(enable_alu),
 			.clk(clk),
+			.enable(enable_alu),
 			.new_hp(newhp_wire)
 			);
 	
 	always @(posedge clk)
 	begin
-	    if (accu_wire >= airng_wire)
+	    if (accu_wire >= moveaccurng_wire)
 		     enable_alu <= calc_dmg;
 	    else
 		     enable_alu <= 1'b0;

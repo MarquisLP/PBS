@@ -1,8 +1,7 @@
-module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
+module pbs_dp(target, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
 	input target;
 	input [1:0]p_move;
 	input actr;
-	input calc_dmg;
 	input app_dmg;
 	input clk;
 	input rst;
@@ -81,59 +80,77 @@ module pbs_dp(target, p_move, actr, calc_dmg, app_dmg, clk, rst, p_hp, AI_hp);
 		endcase
    end
 	
-	always @(posedge clk) // Current HP mux
-	begin
-	   begin
-	   if (calc_dmg)
-		   begin
-				case (target) // start case statement
-				1'b0: 
-						curr_hp <= p_hp;
-				1'b1: 
-						curr_hp <= AI_hp;
-				endcase
-			end
-	   end
-   end
+//	always @(posedge clk) // Current HP mux
+//	begin
+//	   begin
+//	   if (calc_dmg)
+//		   begin
+//				case (target) // start case statement
+//				1'b0: 
+//						curr_hp <= p_hp;
+//				1'b1: 
+//						curr_hp <= AI_hp;
+//				endcase
+//			end
+//	   end
+//   end
+//	
+//	always @(posedge clk) // New HP mux
+//	begin
+//	   begin
+//	   if(!rst)
+//		    begin
+//          p_hp <= 4'b1111;
+//		    AI_hp <= 4'b1111;
+//			 end
+//	   else
+//			begin
+//			   if (app_dmg)
+//				   begin
+//					case (target) // start case statement
+//					   1'b0: p_hp <= newhp_wire;
+//					   1'b1: AI_hp <= newhp_wire;
+//					endcase
+//				end
+//			end
+//	   end
+//   end
 	
-	always @(posedge clk) // New HP mux
+//	dmg_alu dmg1(
+//			.dmg(dmg_wire),
+//			.curr_hp(curr_hp),
+//			.clk(clk),
+//			.enable(enable_alu),
+//			.new_hp(newhp_wire)
+//			);
+	
+	always @(posedge clk)
 	begin
-	   begin
-	   if(!rst)
+		begin
+	    if(!rst)
 		    begin
           p_hp <= 4'b1111;
 		    AI_hp <= 4'b1111;
 			 end
-	   else
-			begin
-			   if (app_dmg)
+	    else if (app_dmg)
+	   // else if ((accu_wire >= moveaccurng_wire) && (app_dmg))
+				case (target) // start case statement
+				1'b0:
 				   begin
-					case (target) // start case statement
-					   1'b0: p_hp <= newhp_wire;
-					   1'b1: AI_hp <= newhp_wire;
-					endcase
-				end
-			end
-	   end
-   end
-	
-	dmg_alu dmg1(
-			.dmg(dmg_wire),
-			.curr_hp(curr_hp),
-			.clk(clk),
-			.enable(enable_alu),
-			.new_hp(newhp_wire)
-			);
-	
-	always @(posedge clk)
-	begin
-	    if (accu_wire >= moveaccurng_wire)
-		     enable_alu <= calc_dmg;
-	    else
-		     enable_alu <= 1'b0;
+					   if (p_hp - dmg_wire < 0)
+						    p_hp <= 0;
+					   else
+						    p_hp <= p_hp - dmg_wire;
+					end
+				1'b1: 
+				   begin
+					   if (AI_hp - dmg_wire < 0)
+						    AI_hp <= 0;
+					   else
+						    AI_hp <= AI_hp - dmg_wire;
+					end
+				 endcase
+		 end
 	end
-			
-	
 
 endmodule
-

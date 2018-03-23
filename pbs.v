@@ -20,7 +20,6 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	
 	wire target_wire;
 	wire actr_wire;
-	wire calc_dmg_wire;
 	wire apply_dmg_wire;
 	
 	wire [7:0] move_disp_wire;
@@ -30,7 +29,6 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	           .target(target_wire),
 				  .p_move(SW[1:0]),
 				  .actr(actr_wire),
-				  .calc_dmg(calc_dmg_wire),
 				  .app_dmg(apply_dmg_wire),
 				  .clk(CLOCK_50),
 				  .rst(SW[9]),
@@ -44,7 +42,6 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .go(go),
        .p_hp(p_hp_wire),
        .ai_hp(ai_hp_wire),
-	    .calc_damage(calc_dmg_wire),
 	    .victory(LEDG[7]),
 	    .loss(LEDR[17]),
 		 .active_trainer(actr_wire),
@@ -57,35 +54,77 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		  .dmg(move_disp_wire[3:0]),
 		  .accu(move_disp_wire[7:4])
 		  );
+		  
 	
-	hex_display dmg_disp(
+	
+	hex_display p_hp_disp(
+							.IN(p_hp_wire), 
+							.OUT(HEX4[6:0])
+							);
+	
+	hex_display ai_hp_disp(
+							.IN(ai_hp_wire), 
+							.OUT(HEX5[6:0])
+							);
+	
+	hex_display2 dmg_disp2(
 							.IN(move_disp_wire[3:0]), 
 							.ONES_DGT(HEX0[6:0]), 
 							.TENS_DGT(HEX1[6:0])
 							);
 	
-	hex_display accu_disp(
+	hex_display2 accu_disp2(
 							.IN(move_disp_wire[7:4]), 
 							.ONES_DGT(HEX2[6:0]), 
 							.TENS_DGT(HEX3[6:0])
 							);
-	
-	hex_display p_hp_disp(
-							.IN(p_hp_wire), 
-							.ONES_DGT(HEX4[6:0]), 
-							.TENS_DGT(HEX5[6:0])
-							);
-	
-	hex_display ai_hp_disp(
-							.IN(ai_hp_wire), 
-							.ONES_DGT(HEX6[6:0]), 
-							.TENS_DGT(HEX7[6:0])
-							);
+//	
+//	hex_display p_hp_disp2(
+//							.IN(p_hp_wire), 
+//							.ONES_DGT(HEX4[6:0]), 
+//							.TENS_DGT(HEX5[6:0])
+//							);
+//	
+//	hex_display ai_hp_disp2(
+//							.IN(ai_hp_wire), 
+//							.ONES_DGT(HEX6[6:0]), 
+//							.TENS_DGT(HEX7[6:0])
+//							);
 	 
 	
 endmodule
 
-module hex_display(IN, ONES_DGT, TENS_DGT);
+module hex_display(IN, OUT);
+    input [3:0] IN;
+	 output reg [7:0] OUT;
+	 
+	 always @(*)
+	 begin
+		case(IN[3:0])
+			4'b0000: OUT = 7'b1000000;
+			4'b0001: OUT = 7'b1111001;
+			4'b0010: OUT = 7'b0100100;
+			4'b0011: OUT = 7'b0110000;
+			4'b0100: OUT = 7'b0011001;
+			4'b0101: OUT = 7'b0010010;
+			4'b0110: OUT = 7'b0000010;
+			4'b0111: OUT = 7'b1111000;
+			4'b1000: OUT = 7'b0000000;
+			4'b1001: OUT = 7'b0011000;
+			4'b1010: OUT = 7'b0001000;
+			4'b1011: OUT = 7'b0000011;
+			4'b1100: OUT = 7'b1000110;
+			4'b1101: OUT = 7'b0100001;
+			4'b1110: OUT = 7'b0000110;
+			4'b1111: OUT = 7'b0001110;
+			
+			default: OUT = 7'b0111111;
+		endcase
+
+	end
+endmodule
+
+module hex_display2(IN, ONES_DGT, TENS_DGT);
     input [3:0] IN;
 	 output reg [7:0] ONES_DGT, TENS_DGT;
 	 

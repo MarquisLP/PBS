@@ -4,7 +4,6 @@ module control(
     input go,
     input p_hp,
     input ai_hp,
-	 output reg calc_damage,
 	 output reg victory,
 	 output reg loss,
     output reg active_trainer, apply_damage, target
@@ -13,21 +12,18 @@ module control(
     reg [5:0] current_state, next_state; 
     
     localparam  S_LOAD_PM         = 5'd0,
-                S_CALC_P_ATTACK   = 5'd1,
-                S_UPDATE_AI_HP    = 5'd2,
-					 S_VIEW_UPDATED_AI_HP = 5'd3,
-                S_CALC_AI_ATTACK  = 5'd4,
-                S_UPDATE_P_HP     = 5'd5,
-					 S_VIEW_UPDATED_P_HP = 5'd6,
-                S_VICTORY         = 5'd7,
-                S_LOSS            = 5'd8;
+                S_UPDATE_AI_HP    = 5'd1,
+					 S_VIEW_UPDATED_AI_HP = 5'd2,
+                S_UPDATE_P_HP     = 5'd3,
+					 S_VIEW_UPDATED_P_HP = 5'd4,
+                S_VICTORY         = 5'd5,
+                S_LOSS            = 5'd6;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_PM: next_state = go ? S_CALC_P_ATTACK : S_LOAD_PM;
-                S_CALC_P_ATTACK: next_state = S_UPDATE_AI_HP;
+                S_LOAD_PM: next_state = go ? S_UPDATE_AI_HP : S_LOAD_PM;
                 S_UPDATE_AI_HP: next_state = S_VIEW_UPDATED_AI_HP;
 					 S_VIEW_UPDATED_AI_HP:
 					     begin
@@ -37,13 +33,12 @@ module control(
 									    if (ai_hp == 4'b0000)
 											next_state = S_VICTORY;
 										 else
-											next_state = S_CALC_AI_ATTACK; 
+											next_state = S_UPDATE_P_HP; 
 										 end
 								    else
 									    next_state = S_VIEW_UPDATED_AI_HP;
 								end
 						  end
-                S_CALC_AI_ATTACK: next_state = S_UPDATE_P_HP;
                 S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_AI_HP;
 					 S_VIEW_UPDATED_P_HP:
 					     begin
@@ -70,7 +65,6 @@ module control(
     always @(*)
     begin: enable_signals
         // By default make all our signals 0
-        calc_damage = 1'b0;
         active_trainer = 1'b0;
         target = 1'b0;
         apply_damage = 1'b0;
@@ -78,22 +72,14 @@ module control(
 		  loss = 1'b0;
 
         case (current_state)
-            S_CALC_P_ATTACK: begin
-                calc_damage = 1'b1;
-                active_trainer = 1'b0; // 0 selects player as the active trainer
-                target = 1'b1; // 1 selects the AI's Pokemon as target
-                end
             S_UPDATE_AI_HP: begin
+				    active_trainer = 1'b0; // 0 selects player as the active trainer
                 target = 1'b1;
-                apply_damage = 1'b1;
-                end
-            S_CALC_AI_ATTACK: begin
-                calc_damage = 1'b1;
-                active_trainer = 1'b1; // 1 selects AI as the active trainer
-                target = 1'b0; // 0 selects the player's Pokemon as target
+                apply_damage = 1'b1; // 1 selects the AI's Pokemon as target
                 end
             S_UPDATE_P_HP: begin
-                target = 1'b0;
+				    active_trainer = 1'b1; // 1 selects AI as the active trainer
+                target = 1'b0;  // 0 selects the player's Pokemon as target
                 apply_damage = 1'b1;
                 end
             S_VICTORY: begin

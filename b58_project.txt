@@ -112,7 +112,17 @@ code wouldn't work, so we spent about half our lab time digging through old lab
 code to fix it. In retrospect, it's a good thing we caught this now rather than
 later, as making the actual HP counters will now be less troublesome.
 
-Week 2: We implemented all of the remaining modules that we had planned for our design. This includes the FSM/Control, the Datapath, a simple ALU for calculating HP damage, a 'Move Mux' for selecting the move/attack select by the player or AI, and the top-level module that combines all of these elements.
-During testing, we encountered major issues with our HP registers. After the player enters their move and hits the 'Go' key, the AI's HP and sometimes the player's HP would immediately drop down to 0.
-While debugging this issue, we found many errors in our implementation and other areas that needed improvement. The biggest change came from realizing that we could update the player and AI's HP in a single clock cycle, which led us to make significant simplications in our FSM and Datapath. However, the HP registers still behave oddly, so further debugging will need to be done.
-At this point, implementing our stretch goals, such as multiple Pokemon and playing music, seems highly unlikely.
+Week 2: We implemented all of the remaining modules that we had planned for our
+design. This includes the FSM/Control, the Datapath, a simple ALU for calculating
+HP damage, a 'Move Mux' for selecting the move/attack select by the player or AI,
+and the top-level module that combines all of these elements.
+During testing, we encountered major issues with our HP registers. After the player
+enters their move and hits the 'Go' key, the AI's HP and sometimes the player's HP
+would immediately drop down to 0.
+While debugging this issue, we found many errors in our implementation and other
+areas that needed improvement. The biggest change came from realizing that we could
+update the player and AI's HP in a single clock cycle, which led us to make
+significant simplications in our FSM and Datapath. However, the HP registers
+still behave oddly, so further debugging will need to be done.
+At this point, implementing our stretch goals, such as multiple Pokemon and playing
+music, seems highly unlikely.

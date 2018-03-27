@@ -1,66 +1,67 @@
-//module rng(HEX0,HEX1,KEY,SW, LEDR,LEDG);
-//	
-//	input [3:0] SW;
-//	input [3:0] KEY;
-//	output [6:0] HEX0;
-//	output [6:0] HEX1;
-//	output [9:0] LEDR;
-//	output [9:0] LEDG;
-//	
-//	reg [3:0] hp = 4'b1001;
-//	
-//	wire [3:0] randomout;
-//	
-//	hex_display hex0(
-//		.IN(randomout),
-//		.OUT(HEX0[6:0])
-//	);
-//	
-//	hex_display hex1(
-//		.IN(hp),
-//		.OUT(HEX1[6:0])
-//	);
-//	
-//	GARO rn1(
-//	         .stop(SW[1]),
-//				.clk(KEY[0]),
-//				.reset(SW[0]),
-//				.random(randomout[0])
-//				);
-//				
-//	GARO rn2(
-//	         .stop(SW[1]),
-//				.clk(KEY[0]),
-//				.reset(SW[0]),
-//				.random(randomout[1])
-//				);
-//				
-//	GARO rn3(
-//	         .stop(SW[1]),
-//				.clk(KEY[0]),
-//				.reset(SW[0]),
-//				.random(randomout[2])
-//				);
-//
-//	GARO rn4(
-//	         .stop(SW[1]),
-//				.clk(KEY[0]),
-//				.reset(SW[0]),
-//				.random(randomout[3])
-//				);
-//				
-//   assign LEDR[0] = (randomout > 'd7);
-//	assign LEDG[0] = (randomout <= 'd7);
-//	
-//	always@(posedge KEY[0])
-//	begin
-//		begin
-//	    if (randomout > 'd7)
-//		     hp <= hp - 1'b1;
-//		end
-//	end
-//	
-//endmodule
+`timescale 1ns / 1ns // `timescale time_unit/time_precision
+module rng(HEX0,HEX1,KEY,SW, LEDR);
+	
+	input [3:0] SW;
+	input [3:0] KEY;
+	output [6:0] HEX0;
+	output [6:0] HEX1;
+	output [9:0] LEDR;
+	//output [9:0] LEDG;
+	
+	reg [3:0] hp = 4'b1001;
+	
+	wire [3:0] randomout;
+	
+	hex_display hex0(
+		.IN(randomout),
+		.OUT(HEX0[6:0])
+	);
+	
+	hex_display hex1(
+		.IN(hp),
+		.OUT(HEX1[6:0])
+	);
+	
+	GARO rn1(
+	         .stop(SW[1]),
+				.clk(KEY[0]),
+				.reset(SW[0]),
+				.random(randomout[0])
+				);
+				
+	GARO rn2(
+	         .stop(SW[1]),
+				.clk(KEY[0]),
+				.reset(SW[0]),
+				.random(randomout[1])
+				);
+				
+	GARO rn3(
+	         .stop(SW[1]),
+				.clk(KEY[0]),
+				.reset(SW[0]),
+				.random(randomout[2])
+				);
+
+	GARO rn4(
+	         .stop(SW[1]),
+				.clk(KEY[0]),
+				.reset(SW[0]),
+				.random(randomout[3])
+				);
+				
+   assign LEDR[0] = (randomout > 'd7);
+	assign LEDR[1] = (randomout <= 'd7);
+	
+	always@(posedge KEY[0])
+	begin
+		begin
+	    if (randomout > 'd7)
+		     hp <= hp - 1'b1;
+		end
+	end
+	
+endmodule
 
 
 

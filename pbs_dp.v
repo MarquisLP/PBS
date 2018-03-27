@@ -1,10 +1,11 @@
-module pbs_dp(target, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
+module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
 	input target;
 	input [1:0]p_move;
 	input actr;
 	input app_dmg;
 	input clk;
 	input rst;
+	input stop;
 	output reg [3:0] p_hp;
 	output reg [3:0] AI_hp;
 	
@@ -23,42 +24,42 @@ module pbs_dp(target, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
 	end
 	
 	GARO AI_rng1(
-	         .stop(1'b1),
+	         .stop(stop),
 				.clk(clk),
 				.reset(rst),
 				.random(airng_wire[0])
 				);
 	
 	GARO AI_rng2(
-	         .stop(1'b1),
+	         .stop(stop),
 				.clk(clk),
 				.reset(rst),
 				.random(airng_wire[1])
 				);
 	
 	GARO move_accurng1(
-	         .stop(1'b1),
+	         .stop(stop),
 				.clk(clk),
 				.reset(rst),
 				.random(moveaccurng_wire[0])
 				);
 	
 	GARO move_accurng2(
-	         .stop(1'b1),
+	         .stop(stop),
 				.clk(clk),
 				.reset(rst),
 				.random(moveaccurng_wire[1])
 				);
 	
 	GARO move_accurng3(
-	         .stop(1'b1),
+	         .stop(stop),
 				.clk(clk),
 				.reset(rst),
 				.random(moveaccurng_wire[2])
 				);
 	
 	GARO move_accurng4(
-	         .stop(1'b1),
+	         .stop(stop),
 				.clk(clk),
 				.reset(rst),
 				.random(moveaccurng_wire[3])

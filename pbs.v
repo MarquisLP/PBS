@@ -1,7 +1,8 @@
-module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
+`timescale 1ns / 1ns // `timescale time_unit/time_precision
+module pbs(SW, LEDR, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 	input [17:0] SW;
 	output [17:0] LEDR;
-	output [7:0]  LEDG;
+	//output [7:0]  LEDG;
 	input [3:0] KEY;
 	input CLOCK_50;
 	output [6:0] HEX0;
@@ -10,13 +11,13 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	output [6:0] HEX3;
 	output [6:0] HEX4;
 	output [6:0] HEX5;
-	output [6:0] HEX6;
-	output [6:0] HEX7;
+	//output [6:0] HEX6;
+	//output [6:0] HEX7;
 	
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
 	wire go;
-	assign go = ~KEY[3];
+	assign go = ~KEY[2];
 	
 	wire target_wire;
 	wire actr_wire;
@@ -27,26 +28,32 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	pbs_dp dp (
 	
 	           .target(target_wire),
+				  .stop(SW[5]),
 				  .p_move(SW[1:0]),
 				  .actr(actr_wire),
 				  .app_dmg(apply_dmg_wire),
 				  .clk(CLOCK_50),
-				  .rst(SW[9]),
+				  .rst(SW[8]),
 				  .p_hp(p_hp_wire),
 				  .AI_hp(ai_hp_wire)
 				  );
    
 	control fsm (
        .clk(CLOCK_50),
-       .reset_n(SW[9]),
+       .reset_n(SW[8]),
        .go(go),
        .p_hp(p_hp_wire),
        .ai_hp(ai_hp_wire),
-	    .victory(LEDG[7]),
-	    .loss(LEDR[17]),
+	    .victory(LEDR[8]),
+	    .loss(LEDR[9]),
 		 .active_trainer(actr_wire),
 		 .apply_damage(apply_dmg_wire),
-		 .target(target_wire)
+		 .target(target_wire),
+		 .state1(LEDR[0]),
+		 .state2(LEDR[1]),
+		 .state3(LEDR[2]),
+		 .state4(LEDR[3]),
+		 .state5(LEDR[4]),
     );
 	 
 	 move_mux move_disp (

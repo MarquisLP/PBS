@@ -6,7 +6,8 @@ module control(
     input ai_hp,
 	 output reg victory,
 	 output reg loss,
-    output reg active_trainer, apply_damage, target
+    output reg active_trainer, apply_damage, target,
+	 output reg state1, state2, state3, state4, state5
     );
 
     reg [5:0] current_state, next_state; 
@@ -26,34 +27,34 @@ module control(
                 S_LOAD_PM: next_state = go ? S_UPDATE_AI_HP : S_LOAD_PM;
                 S_UPDATE_AI_HP: next_state = S_VIEW_UPDATED_AI_HP;
 					 S_VIEW_UPDATED_AI_HP:
-					     begin
+					     //begin
 						      begin
 						          if (go)
 									    begin
-									    if (ai_hp == 4'b0000)
-											next_state = S_VICTORY;
-										 else
+//									    if (ai_hp == 4'b0000)
+//											next_state = S_VICTORY;
+//										 else
 											next_state = S_UPDATE_P_HP; 
 										 end
 								    else
 									    next_state = S_VIEW_UPDATED_AI_HP;
 								end
-						  end
-                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_AI_HP;
+						  //end
+                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_P_HP;
 					 S_VIEW_UPDATED_P_HP:
-					     begin
+					     //begin
 						      begin
 						          if (go)
 									    begin
-									    if (p_hp == 4'b0000)
-											next_state = S_LOSS;
-										 else
+//									    if (p_hp == 4'b0000)
+//											next_state = S_LOSS;
+//										 else
 											next_state = S_LOAD_PM; 
 										 end
 								    else
 									    next_state = S_VIEW_UPDATED_P_HP;
 								end
-						  end
+						  //end
                 S_VICTORY: next_state = S_VICTORY;
 					 S_LOSS: next_state = S_LOSS;
                 default:   next_state = S_LOAD_PM;
@@ -70,18 +71,34 @@ module control(
         apply_damage = 1'b0;
 		  victory = 1'b0;
 		  loss = 1'b0;
+		  state1 = 1'b0;
+		  state2 = 1'b0;
+		  state3 = 1'b0;
+		  state4 = 1'b0;
+		  state5 = 1'b0;
 
         case (current_state)
+		      S_LOAD_PM: begin
+				    state1 = 1'b1;
+					 end
             S_UPDATE_AI_HP: begin
 				    active_trainer = 1'b0; // 0 selects player as the active trainer
-                target = 1'b1;
-                apply_damage = 1'b1; // 1 selects the AI's Pokemon as target
+                target = 1'b1;  // 1 selects the AI's Pokemon as target
+                apply_damage = 1'b1;
+					 state2 = 1'b1;
                 end
+			   S_VIEW_UPDATED_AI_HP: begin
+				    state3 = 1'b1;
+					 end
             S_UPDATE_P_HP: begin
 				    active_trainer = 1'b1; // 1 selects AI as the active trainer
                 target = 1'b0;  // 0 selects the player's Pokemon as target
                 apply_damage = 1'b1;
+					 state4 = 1'b1;
                 end
+			   S_VIEW_UPDATED_P_HP: begin
+				    state5 = 1'b1;
+					 end
             S_VICTORY: begin
                 victory = 1'b1;
                 end

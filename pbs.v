@@ -20,7 +20,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	assign go = SW[9];
 	
 	wire rst;
-	assign rst = SW[10];
+	assign rst = SW[8];
 	
 	wire target_wire;
 	wire actr_wire;
@@ -49,7 +49,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .go(go),
        .p_hp(p_hp_wire),
        .ai_hp(ai_hp_wire),
-	    .victory(LEDG[8]),
+	    .victory(LEDR[8]),
 	    .loss(LEDR[9]),
 		 .active_trainer(actr_wire),
 		 .apply_damage(apply_dmg_wire),
@@ -69,16 +69,16 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 //		  );
 //		  
 	
-//	
-//	hex_display p_hp_disp(
-//							.IN(p_hp_wire), 
-//							.OUT(HEX4[6:0])
-//							);
-//	
-//	hex_display ai_hp_disp(
-//							.IN(ai_hp_wire), 
-//							.OUT(HEX5[6:0])
-//							);
+	
+	hex_display p_hp_disp(
+							.IN(p_hp_wire), 
+							.OUT(HEX4[6:0])
+							);
+	
+	hex_display ai_hp_disp(
+							.IN(ai_hp_wire), 
+							.OUT(HEX5[6:0])
+							);
 	
 	hex_display2 dmg_disp2(
 							.IN(move_disp_wire[3:0]), 
@@ -91,19 +91,19 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 							.ONES_DGT(HEX2[6:0]), 
 							.TENS_DGT(HEX3[6:0])
 							);
-	
-	hex_display2 p_hp_disp2(
-							.IN(p_hp_wire[3:0]), 
-							.ONES_DGT(HEX4[6:0]), 
-							.TENS_DGT(HEX5[6:0])
-							);
-	
-	hex_display2 ai_hp_disp2(
-							.IN(ai_hp_wire[3:0]), 
-							.ONES_DGT(HEX6[6:0]), 
-							.TENS_DGT(HEX7[6:0])
-							);
-	 
+//	
+//	hex_display2 p_hp_disp2(
+//							.IN(p_hp_wire[3:0]), 
+//							.ONES_DGT(HEX4[6:0]), 
+//							.TENS_DGT(HEX5[6:0])
+//							);
+//	
+//	hex_display2 ai_hp_disp2(
+//							.IN(ai_hp_wire[3:0]), 
+//							.ONES_DGT(HEX6[6:0]), 
+//							.TENS_DGT(HEX7[6:0])
+//							);
+//	 
 	
 endmodule
 

@@ -1,14 +1,16 @@
 `timescale 1ns / 1ns // `timescale time_unit/time_precision
-module rng(HEX0,HEX1,KEY,SW, LEDR);
+module rng(HEX0,HEX1,KEY,SW, LEDR, CLOCK_50);
 	
 	input [3:0] SW;
 	input [3:0] KEY;
+	input CLOCK_50;
 	output [6:0] HEX0;
 	output [6:0] HEX1;
 	output [9:0] LEDR;
 	//output [9:0] LEDG;
 	
 	reg [3:0] hp = 4'b1001;
+	reg [3:0] dmg = 4'b0011;
 	
 	wire [3:0] randomout;
 	
@@ -24,28 +26,28 @@ module rng(HEX0,HEX1,KEY,SW, LEDR);
 	
 	GARO rn1(
 	         .stop(SW[1]),
-				.clk(KEY[0]),
+				.clk(CLOCK_50),
 				.reset(SW[0]),
 				.random(randomout[0])
 				);
 				
 	GARO rn2(
 	         .stop(SW[1]),
-				.clk(KEY[0]),
+				.clk(CLOCK_50),
 				.reset(SW[0]),
 				.random(randomout[1])
 				);
 				
 	GARO rn3(
 	         .stop(SW[1]),
-				.clk(KEY[0]),
+				.clk(CLOCK_50),
 				.reset(SW[0]),
 				.random(randomout[2])
 				);
 
 	GARO rn4(
 	         .stop(SW[1]),
-				.clk(KEY[0]),
+				.clk(CLOCK_50),
 				.reset(SW[0]),
 				.random(randomout[3])
 				);
@@ -56,8 +58,9 @@ module rng(HEX0,HEX1,KEY,SW, LEDR);
 	always@(posedge KEY[0])
 	begin
 		begin
-	    if (randomout > 'd7)
-		     hp <= hp - 1'b1;
+		 if(~KEY[0])
+			if (randomout > 'd7)
+		     hp <= hp - dmg;
 		end
 	end
 	

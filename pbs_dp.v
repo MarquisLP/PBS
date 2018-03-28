@@ -128,6 +128,7 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, a
 //			);
 	
 	always @(posedge clk)
+	//always @(posedge app_dmg or negedge rst)
 	begin
 		begin
 		 dmg <= dmg_wire;
@@ -154,7 +155,7 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, a
 							
 						    AI_hp <= dmg; // 00011
 					   else
-						    AI_hp <= AI_hp - 5'b00011;
+						    AI_hp <= 5'b01111 - dmg;
 					
 					end
 				 endcase

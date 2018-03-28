@@ -7,56 +7,59 @@ module control(
 	 output reg victory,
 	 output reg loss,
     output reg active_trainer, apply_damage, target,
-	 output reg state1, state2, state3, state4, state5
+	 output reg state1, state2, state3, state4, state5, state6
     );
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_LOAD_PM         = 5'd0,
-                S_UPDATE_AI_HP    = 5'd1,
-					 S_VIEW_UPDATED_AI_HP = 5'd2,
-                S_UPDATE_P_HP     = 5'd3,
-					 S_VIEW_UPDATED_P_HP = 5'd4,
-                S_VICTORY         = 5'd5,
-                S_LOSS            = 5'd6;
+    localparam  S_LOAD_PM         = 4'b0000,
+                S_UPDATE_AI_HP    = 4'b0001,
+					 S_VIEW_UPDATED_AI_HP = 4'b0011,
+                S_UPDATE_P_HP     = 4'b0010,
+					 S_VIEW_UPDATED_P_HP = 4'b0110,
+					 S_VPHP_TO_LPM = 4'b0100,
+                S_VICTORY         = 4'b1011,
+                S_LOSS            = 4'b1110;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
                 S_LOAD_PM: next_state = go ? S_UPDATE_AI_HP : S_LOAD_PM;
-                S_UPDATE_AI_HP: next_state = S_VIEW_UPDATED_AI_HP;
-					 S_VIEW_UPDATED_AI_HP:
-					     //begin
-						      begin
-						          if (go)
-									    begin
-//									    if (ai_hp == 4'b0000)
-//											next_state = S_VICTORY;
-//										 else
-											next_state = S_UPDATE_P_HP; 
-										 end
-								    else
-									    next_state = S_VIEW_UPDATED_AI_HP;
-								end
+                S_UPDATE_AI_HP: next_state = S_LOAD_PM;
+//					 S_VIEW_UPDATED_AI_HP:
+//					     //begin
+//						      begin
+//						          if (go)
+//									    begin
+////									    if (ai_hp == 4'd0)
+////											
+////											next_state = S_VICTORY;
+////										 else
+//											next_state = S_UPDATE_P_HP; 
+//										 end
+//								    else
+//									    next_state = S_VIEW_UPDATED_AI_HP;
+//								end
 						  //end
-                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_P_HP;
-					 S_VIEW_UPDATED_P_HP:
-					     //begin
-						      begin
-						          if (go)
-									    begin
-//									    if (p_hp == 4'b0000)
-//											next_state = S_LOSS;
-//										 else
-											next_state = S_LOAD_PM; 
-										 end
-								    else
-									    next_state = S_VIEW_UPDATED_P_HP;
-								end
-						  //end
-                S_VICTORY: next_state = S_VICTORY;
-					 S_LOSS: next_state = S_LOSS;
+//                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_P_HP;
+//					 S_VIEW_UPDATED_P_HP:
+//					     //begin
+//						      begin
+//						          if (go)
+//									    begin
+////									    if (p_hp == 4'd0)
+////											next_state = S_LOSS;
+////										 else
+//											next_state = S_VPHP_TO_LPM;
+//										 end
+//								    else
+//									    next_state = S_VIEW_UPDATED_P_HP;
+//								end
+//						  //end
+//				    S_VPHP_TO_LPM: next_state = S_LOAD_PM;
+//                S_VICTORY: next_state = S_VICTORY;
+//					 S_LOSS: next_state = S_LOSS;
                 default:   next_state = S_LOAD_PM;
         endcase
     end // state_table
@@ -76,6 +79,7 @@ module control(
 		  state3 = 1'b0;
 		  state4 = 1'b0;
 		  state5 = 1'b0;
+		  state6 = 1'b0;
 
         case (current_state)
 		      S_LOAD_PM: begin
@@ -98,6 +102,9 @@ module control(
                 end
 			   S_VIEW_UPDATED_P_HP: begin
 				    state5 = 1'b1;
+					 end
+			   S_VPHP_TO_LPM: begin
+				    state6 = 1'b1;
 					 end
             S_VICTORY: begin
                 victory = 1'b1;

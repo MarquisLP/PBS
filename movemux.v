@@ -1,30 +1,30 @@
 module move_mux(pl_move, dmg, accu);
 	input [1:0]pl_move;
-	output reg [3:0] dmg;
-	output reg [3:0] accu;
+	output reg [4:0] dmg;
+	output reg [4:0] accu;
 	
 	always @(*) // declare always block
 	begin
 		case (pl_move[1:0]) // start case statement
 		2'b00: begin
-			dmg = 4'b0011;
-			accu = 4'b1111;
+			dmg = 5'b00011;
+			accu = 5'b01111;
 			end
 		2'b01: begin
-			dmg = 4'b0111;
-			accu = 4'b1100;
+			dmg = 5'b00111;
+			accu = 5'b01100;
 			end
 		2'b10:  begin
-			dmg = 4'b1010;
-			accu = 4'b1010;
+			dmg = 5'b01010;
+			accu = 5'b01010;
 			end// case 2
 		2'b11: begin
-			dmg = 4'b1111;
-			accu = 4'b0101;
+			dmg = 5'b01111;
+			accu = 5'b00101;
 			end // case 3
 		default: begin
-			dmg = 4'b0000;
-			accu = 4'b1111;
+			dmg = 5'b00000;
+			accu = 5'b01111;
 			end // default case
 	endcase
   end

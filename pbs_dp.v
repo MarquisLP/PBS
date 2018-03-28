@@ -1,4 +1,4 @@
-module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
+module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, accu);
 	input target;
 	input [1:0]p_move;
 	input actr;
@@ -6,22 +6,24 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
 	input clk;
 	input rst;
 	input stop;
-	output reg [3:0] p_hp;
-	output reg [3:0] AI_hp;
+	output reg [4:0] p_hp;
+	output reg [4:0] AI_hp;
+	output reg [4:0] dmg;
+	output reg [4:0] accu;
 	
 	wire [1:0] airng_wire;
-	wire [3:0] moveaccurng_wire;
+	wire [4:0] moveaccurng_wire;
 	reg [1:0] actr_wire;
-	wire [3:0] dmg_wire;
-	wire [3:0] accu_wire;
-	reg [3:0] curr_hp;
-	wire [3:0] newhp_wire;
+	wire [4:0] dmg_wire;
+	wire [4:0] accu_wire;
 	reg enable_alu;
 	
 	initial begin
-	    p_hp <= 4'b1111;
-		 AI_hp <= 4'b1111;
+	    p_hp <= 5'b01111;
+		 AI_hp <= 5'b01111;
 	end
+	
+	assign moveaccurng_wire[4] = 0;
 	
 	GARO AI_rng1(
 	         .stop(stop),
@@ -75,9 +77,9 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
 	begin
 		case (actr) // start case statement
 		1'b0:
-			 actr_wire <= p_move;
+			 actr_wire = p_move;
 		1'b1: 
-			 actr_wire <= airng_wire;
+			 actr_wire = airng_wire;
 		endcase
    end
 	
@@ -128,27 +130,32 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp);
 	always @(posedge clk)
 	begin
 		begin
+		 dmg <= dmg_wire;
+		 accu <= accu_wire;
 	    if(!rst)
 		    begin
-          p_hp <= 4'b1111;
-		    AI_hp <= 4'b1111;
+          p_hp <= 5'b01111;
+		    AI_hp <= 5'b01111;
 			 end
 	    else if (app_dmg)
-	   // else if ((accu_wire >= moveaccurng_wire) && (app_dmg))
+	    //else if ((accu >= moveaccurng_wire) && (app_dmg))
 				case (target) // start case statement
 				1'b0:
 				   begin
-					   if (p_hp - dmg_wire < 0)
+					   if (dmg > p_hp)
 						    p_hp <= 0;
 					   else
-						    p_hp <= p_hp - dmg_wire;
+						    p_hp <= p_hp - dmg;
+
 					end
 				1'b1: 
 				   begin
-					   if (AI_hp - dmg_wire < 0)
-						    AI_hp <= 0;
+					   if (1'b0)
+							
+						    AI_hp <= dmg; // 00011
 					   else
-						    AI_hp <= AI_hp - dmg_wire;
+						    AI_hp <= AI_hp - 5'b00011;
+					
 					end
 				 endcase
 		 end

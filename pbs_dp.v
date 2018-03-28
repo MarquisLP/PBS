@@ -16,7 +16,10 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, a
 	reg [1:0] actr_wire;
 	wire [4:0] dmg_wire;
 	wire [4:0] accu_wire;
+	wire [4:0] curr_hp;
 	reg enable_alu;
+	
+	assign curr_hp = AI_hp;
 	
 	initial begin
 	    p_hp <= 5'b01111;
@@ -127,8 +130,8 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, a
 //			.new_hp(newhp_wire)
 //			);
 	
-	always @(posedge clk)
-	//always @(posedge app_dmg or negedge rst)
+	//always @(posedge clk)
+	always @(posedge app_dmg or negedge rst)
 	begin
 		begin
 		 dmg <= dmg_wire;
@@ -155,7 +158,7 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, a
 							
 						    AI_hp <= dmg; // 00011
 					   else
-						    AI_hp <= 5'b01111 - dmg;
+						    AI_hp <= curr_hp; //- 5'b00011;
 					
 					end
 				 endcase

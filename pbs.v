@@ -30,6 +30,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire load_ai_hp_wire;
 	wire apply_p_dmg_wire;
 	wire apply_ai_dmg_wire;
+	wire [3:0] moveaccurng_wire;
 	
 	wire [7:0] move_disp_wire;
 	
@@ -48,6 +49,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 				  .AI_hp(ai_hp_wire),
 				  .dmg(move_disp_wire[3:0]),
               .accu(move_disp_wire[7:4]),
+				  .moveaccurng(moveaccurng_wire),
 				  );
    
 	control fsm (
@@ -102,7 +104,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 							);
 	
 	hex_display2 p_hp_disp2(
-							.IN(p_hp_wire[3:0]), 
+							.IN(moveaccurng_wire[3:0]), 
 							.ONES_DGT(HEX4[6:0]), 
 							.TENS_DGT(HEX5[6:0])
 							);

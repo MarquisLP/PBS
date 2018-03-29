@@ -26,7 +26,7 @@ module control(
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_PM: next_state = go ? S_LOAD_AI_HP : S_LOAD_PM;
+                S_LOAD_PM: next_state = S_LOAD_AI_HP;
 					 S_LOAD_AI_HP: next_state =  S_UPDATE_AI_HP;
                 S_UPDATE_AI_HP: next_state = S_LOAD_PM;
 //					 S_VIEW_UPDATED_AI_HP:

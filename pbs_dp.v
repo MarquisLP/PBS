@@ -78,6 +78,8 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 				.dmg(dmg_wire),
 				.accu(accu_wire)
 					);
+					
+	
 	
 	always @(posedge clk) // Trainer Mux
 	begin
@@ -206,7 +208,7 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 //		     if (dmg > AI_hp)
 //			     ai_out <= 4'b0000;
 //			  else
-			     ai_out <= curr_ai_hp + (~dmg+1'b1);   
+			     ai_out <= curr_ai_hp;   
 //		  end
     end
 

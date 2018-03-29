@@ -6,27 +6,29 @@ module control(
     input ai_hp,
 	 output reg victory,
 	 output reg loss,
-    output reg active_trainer, apply_damage, target,
-	 output reg state1, state2, state3, state4, state5, state6
+    output reg active_trainer, load_ai_hp, apply_p_damage, apply_ai_damage, target,
+	 output reg state1, state2, state3, state4, state5, state6, state7
     );
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_LOAD_PM         = 4'b0000,
-                S_UPDATE_AI_HP    = 4'b0001,
-					 S_VIEW_UPDATED_AI_HP = 4'b0011,
-                S_UPDATE_P_HP     = 4'b0010,
-					 S_VIEW_UPDATED_P_HP = 4'b0110,
-					 S_VPHP_TO_LPM = 4'b0100,
-                S_VICTORY         = 4'b1011,
-                S_LOSS            = 4'b1110;
+    localparam  S_LOAD_PM         = 4'd0,
+	             S_LOAD_AI_HP       = 4'd1,
+                S_UPDATE_AI_HP    = 4'd2,
+					 S_VIEW_UPDATED_AI_HP = 4'd3,
+                S_UPDATE_P_HP     = 4'd4,
+					 S_VIEW_UPDATED_P_HP = 4'd5,
+					 S_VPHP_TO_LPM = 4'd6,
+                S_VICTORY         = 4'd7,
+                S_LOSS            = 4'd8;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_PM: next_state = go ? S_UPDATE_AI_HP : S_LOAD_PM;
-                S_UPDATE_AI_HP: next_state = S_LOAD_PM;
+                S_LOAD_PM: next_state = go ? S_LOAD_AI_HP : S_LOAD_PM;
+					 S_LOAD_AI_HP: next_state = go ? S_UPDATE_AI_HP : S_LOAD_AI_HP;
+                S_UPDATE_AI_HP: next_state = go ? S_LOAD_PM : S_UPDATE_AI_HP;
 //					 S_VIEW_UPDATED_AI_HP:
 //					     //begin
 //						      begin
@@ -71,7 +73,9 @@ module control(
         // By default make all our signals 0
         active_trainer = 1'b0;
         target = 1'b0;
-        apply_damage = 1'b0;
+		  load_ai_hp = 1'b0;
+		  apply_p_damage = 1'b0;
+        apply_ai_damage = 1'b0;
 		  victory = 1'b0;
 		  loss = 1'b0;
 		  state1 = 1'b0;
@@ -80,31 +84,36 @@ module control(
 		  state4 = 1'b0;
 		  state5 = 1'b0;
 		  state6 = 1'b0;
+		  state7 = 1'b0;
 
         case (current_state)
 		      S_LOAD_PM: begin
 				    state1 = 1'b1;
 					 end
+			   S_LOAD_AI_HP : begin
+				   load_ai_hp = 1'b1;
+				   state2 = 1'b1;
+					end
             S_UPDATE_AI_HP: begin
 				    active_trainer = 1'b0; // 0 selects player as the active trainer
                 target = 1'b1;  // 1 selects the AI's Pokemon as target
-                apply_damage = 1'b1;
-					 state2 = 1'b1;
+                apply_ai_damage = 1'b1;
+					 state3 = 1'b1;
                 end
 			   S_VIEW_UPDATED_AI_HP: begin
-				    state3 = 1'b1;
+				    state4 = 1'b1;
 					 end
             S_UPDATE_P_HP: begin
 				    active_trainer = 1'b1; // 1 selects AI as the active trainer
                 target = 1'b0;  // 0 selects the player's Pokemon as target
-                apply_damage = 1'b1;
-					 state4 = 1'b1;
+                apply_p_damage = 1'b1;
+					 state5 = 1'b1;
                 end
 			   S_VIEW_UPDATED_P_HP: begin
-				    state5 = 1'b1;
+				    state6 = 1'b1;
 					 end
 			   S_VPHP_TO_LPM: begin
-				    state6 = 1'b1;
+				    state7 = 1'b1;
 					 end
             S_VICTORY: begin
                 victory = 1'b1;

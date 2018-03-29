@@ -1,32 +1,35 @@
-module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, accu);
+module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, curr_ai_hp);
 	input target;
 	input [1:0]p_move;
 	input actr;
-	input app_dmg;
+	input load_ai_hp;
+	input app_pl_dmg;
+	input app_ai_dmg;
 	input clk;
 	input rst;
 	input stop;
-	output reg [4:0] p_hp;
-	output reg [4:0] AI_hp;
-	output reg [4:0] dmg;
-	output reg [4:0] accu;
+	output reg [3:0] p_hp;
+	output reg [3:0] AI_hp;
+	output reg [3:0] dmg;
+	output reg [3:0] accu;
 	
 	wire [1:0] airng_wire;
-	wire [4:0] moveaccurng_wire;
+	wire [3:0] moveaccurng_wire;
 	reg [1:0] actr_wire;
-	wire [4:0] dmg_wire;
-	wire [4:0] accu_wire;
-	wire [4:0] curr_hp;
+	wire [3:0] dmg_wire;
+	wire [3:0] accu_wire;
+	output reg [3:0] curr_ai_hp;
 	reg enable_alu;
+	reg [3:0] p_out;
+	reg [3:0] ai_out;
 	
-	assign curr_hp = AI_hp;
 	
 	initial begin
-	    p_hp <= 5'b01111;
-		 AI_hp <= 5'b01111;
+	    p_hp <= 4'b1111;
+		 AI_hp <= 4'b1111;
 	end
 	
-	assign moveaccurng_wire[4] = 0;
+	
 	
 	GARO AI_rng1(
 	         .stop(stop),
@@ -130,39 +133,81 @@ module pbs_dp(target, stop, p_move, actr, app_dmg, clk, rst, p_hp, AI_hp, dmg, a
 //			.new_hp(newhp_wire)
 //			);
 	
-	//always @(posedge clk)
-	always @(posedge app_dmg or negedge rst)
-	begin
-		begin
-		 dmg <= dmg_wire;
-		 accu <= accu_wire;
-	    if(!rst)
-		    begin
-          p_hp <= 5'b01111;
-		    AI_hp <= 5'b01111;
-			 end
-	    else if (app_dmg)
-	    //else if ((accu >= moveaccurng_wire) && (app_dmg))
-				case (target) // start case statement
-				1'b0:
-				   begin
-					   if (dmg > p_hp)
-						    p_hp <= 0;
-					   else
-						    p_hp <= p_hp - dmg;
+//	always @(posedge clk)
+//	//always @(posedge app_dmg or negedge rst)
+//	begin
+//		begin
+//		 dmg <= dmg_wire;
+//		 accu <= accu_wire;
+//	    if(!rst)
+//		    begin
+//          p_hp <= 5'b01111;
+//		    AI_hp <= 5'b01111;
+//			 end
+//	    else if (app_dmg)
+//	    //else if ((accu >= moveaccurng_wire) && (app_dmg))
+//				case (target) // start case statement
+//				1'b0:
+//				   begin
+//					   if (dmg > p_hp)
+//						    p_hp <= 0;
+//					   else
+//						    p_hp <= p_hp - dmg;
+//
+//					end
+//				1'b1: 
+//				   begin
+//					   if (1'b0)
+//							
+//						    AI_hp <= dmg; // 00011
+//					   else
+//							 
+//						    AI_hp <= curr_hp - 5'b00011;
+//					
+//					end
+//				 endcase
+//		 end
+//	end
 
-					end
-				1'b1: 
-				   begin
-					   if (1'b0)
-							
-						    AI_hp <= dmg; // 00011
-					   else
-						    AI_hp <= curr_hp; //- 5'b00011;
-					
-					end
-				 endcase
-		 end
-	end
+   always@(posedge clk) begin
+	     if(!rst) begin
+		      curr_ai_hp <= 4'b1111;
+		  end
+		  else begin
+		      if (load_ai_hp) begin
+				    curr_ai_hp <= AI_hp;
+				end
+		  end
+   end
+
+   always@(posedge clk) begin
+        if(!rst) begin
+            p_hp <= 4'b1111;
+			   AI_hp <= 4'b1111;	
+        end
+        else 
+            if(app_pl_dmg)
+                p_hp <= p_out;
+			   else if (app_ai_dmg)
+				    AI_hp <= ai_out;
+    end
+
+  always @(*)
+    begin 
+		  dmg <= dmg_wire;
+		  accu <= accu_wire;
+//		  begin
+//		     if (dmg > curr_p_hp)
+//			     p_out <= 4'b0000;
+//			  else
+//			     p_out <= curr_p_hp - dmg;   
+//		  end
+//		  begin
+//		     if (dmg > AI_hp)
+//			     ai_out <= 4'b0000;
+//			  else
+			     ai_out <= curr_ai_hp - dmg;   
+//		  end
+    end
 
 endmodule

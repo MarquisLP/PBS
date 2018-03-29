@@ -17,6 +17,8 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
 	wire [3:0] curr_ai_hp_wire;
+	wire clk;
+	assign clk = ~KEY[0];
 	wire go;
 	assign go = ~KEY[1];
 	
@@ -40,17 +42,16 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 				  .load_ai_hp(load_ai_hp_wire),
 				  .app_pl_dmg(apply_p_dmg_wire),
 				  .app_ai_dmg(apply_ai_dmg_wire),
-				  .clk(CLOCK_50),
+				  .clk(clk),
 				  .rst(rst),
 				  .p_hp(p_hp_wire),
 				  .AI_hp(ai_hp_wire),
 				  .dmg(move_disp_wire[3:0]),
               .accu(move_disp_wire[7:4]),
-				  .curr_ai_hp(curr_ai_hp_wire)
 				  );
    
 	control fsm (
-       .clk(CLOCK_50),
+       .clk(clk),
        .reset_n(rst),
        .go(go),
        .p_hp(p_hp_wire),

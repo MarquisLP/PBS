@@ -1,4 +1,4 @@
-module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, curr_ai_hp);
+module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu);
 	input target;
 	input [1:0]p_move;
 	input actr;
@@ -18,8 +18,7 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 	reg [1:0] actr_wire;
 	wire [3:0] dmg_wire;
 	wire [3:0] accu_wire;
-	output reg [3:0] curr_ai_hp;
-	reg enable_alu;
+	reg [3:0] curr_ai_hp;
 	reg [3:0] p_out;
 	reg [3:0] ai_out;
 	
@@ -208,7 +207,7 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 //		     if (dmg > AI_hp)
 //			     ai_out <= 4'b0000;
 //			  else
-			     ai_out <= curr_ai_hp;   
+			     ai_out <= curr_ai_hp - dmg;   
 //		  end
     end
 

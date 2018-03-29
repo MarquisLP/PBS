@@ -18,12 +18,12 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire [3:0] ai_hp_wire;
 	wire [3:0] curr_ai_hp_wire;
 	wire clk;
-	assign clk = ~KEY[0];
+	assign clk = SW[13];
 	wire go;
-	assign go = ~KEY[1];
+	assign go = SW[17];
 	
 	wire rst;
-	assign rst = SW[8];
+	assign rst = SW[12];
 	
 	wire target_wire;
 	wire actr_wire;
@@ -57,7 +57,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .p_hp(p_hp_wire),
        .ai_hp(ai_hp_wire),
 	    .victory(LEDG[8]),
-	    .loss(LEDR[9]),
+	    .loss(LEDR[17]),
 		 .active_trainer(actr_wire),
 		 .load_ai_hp(load_ai_hp_wire),
 		 .apply_p_damage(apply_p_dmg_wire),
@@ -68,8 +68,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		 .state3(LEDR[2]),
 		 .state4(LEDR[3]),
 		 .state5(LEDR[4]),
-		 .state6(LEDR[5]),
-		 .state7(LEDR[6])
+		 .state6(LEDR[5])
     );
 	 
 //	 move_mux move_disp (
@@ -80,15 +79,15 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 //		  
 	
 	
-	hex_display p_hp_disp(
-							.IN(p_hp_wire), 
-							.OUT(HEX4[6:0])
-							);
-	
-	hex_display ai_hp_disp(
-							.IN(ai_hp_wire), 
-							.OUT(HEX5[6:0])
-							);
+//	hex_display p_hp_disp(
+//							.IN(p_hp_wire), 
+//							.OUT(HEX4[6:0])
+//							);
+//	
+//	hex_display ai_hp_disp(
+//							.IN(ai_hp_wire), 
+//							.OUT(HEX5[6:0])
+//							);
 	
 	hex_display2 dmg_disp2(
 							.IN(move_disp_wire[3:0]), 
@@ -102,17 +101,17 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 							.TENS_DGT(HEX3[6:0])
 							);
 	
-//	hex_display2 p_hp_disp2(
-//							.IN(curr_ai_hp_wire[3:0]), 
-//							.ONES_DGT(HEX4[6:0]), 
-//							.TENS_DGT(HEX5[6:0])
-//							);
-//	
-//	hex_display2 ai_hp_disp2(
-//							.IN(ai_hp_wire[3:0]), 
-//							.ONES_DGT(HEX6[6:0]), 
-//							.TENS_DGT(HEX7[6:0])
-//							);
+	hex_display2 p_hp_disp2(
+							.IN(p_hp_wire[3:0]), 
+							.ONES_DGT(HEX4[6:0]), 
+							.TENS_DGT(HEX5[6:0])
+							);
+	
+	hex_display2 ai_hp_disp2(
+							.IN(ai_hp_wire[3:0]), 
+							.ONES_DGT(HEX6[6:0]), 
+							.TENS_DGT(HEX7[6:0])
+							);
 	 
 	
 endmodule

@@ -170,45 +170,62 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 //		 end
 //	end
 
-   always@(posedge clk) begin
-	     if(!rst) begin
-		      curr_ai_hp <= 4'b1111;
-		  end
-		  else begin
-		      if (load_ai_hp) begin
-				    curr_ai_hp <= AI_hp;
-				end
-		  end
-   end
-
-   always@(posedge clk) begin
-        if(!rst) begin
-            p_hp <= 4'b1111;
-			   AI_hp <= 4'b1111;	
-        end
-        else 
-            if(app_pl_dmg)
-                p_hp <= p_out;
-			   else if (app_ai_dmg)
-				    AI_hp <= ai_out;
-    end
-
-  always @(*)
-    begin 
-		  dmg <= dmg_wire;
-		  accu <= accu_wire;
+   always @(posedge clk) begin
+	    dmg <= dmg_wire;
+		 accu <= accu_wire;
+		 if (!rst) begin
+		     p_hp <= 4'b1111;
+			  AI_hp <= 4'b1111;
+		 end
+	    else begin
+		     if (app_ai_dmg) begin
+		         if (dmg_wire > AI_hp)
+			          AI_hp <= 4'b0000;
+			      else
+		            AI_hp <= AI_hp - dmg_wire;
+			  end
+	    end
+	end
+//
+//   always@(posedge clk) begin
+//	     if(!rst) begin
+//		      curr_ai_hp <= 4'b1111;
+//		  end
+//		  else begin
+//		      if (load_ai_hp) begin
+//				    curr_ai_hp <= AI_hp;
+//				end
+//		  end
+//   end
+//
+//   always@(posedge clk) begin
+//        if(!rst) begin
+//            p_hp <= 4'b1111;
+//			   AI_hp <= 4'b1111;	
+//        end
+//        else 
+//            if(app_pl_dmg)
+//                p_hp <= p_out;
+//			   else if (app_ai_dmg)
+//				    AI_hp <= ai_out;
+//    end
+//
+//  always @(*)
+//    begin 
+//		  dmg <= dmg_wire;
+//		  accu <= accu_wire;
 //		  begin
 //		     if (dmg > curr_p_hp)
 //			     p_out <= 4'b0000;
 //			  else
 //			     p_out <= curr_p_hp - dmg;   
 //		  end
-		  begin
-		     if (dmg > AI_hp)
-			     ai_out <= 4'b0000;
-			  else
-			     ai_out <= curr_ai_hp - dmg;   
-		  end
-    end
+//		  begin
+//		     if (dmg > AI_hp)
+//			     ai_out <= 4'b0000;
+//			  else
+//			     ai_out <= curr_ai_hp - dmg;   
+//		  end
+//    end
 
 endmodule

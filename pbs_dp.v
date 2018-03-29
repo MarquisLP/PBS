@@ -203,12 +203,12 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 //			  else
 //			     p_out <= curr_p_hp - dmg;   
 //		  end
-//		  begin
-//		     if (dmg > AI_hp)
-//			     ai_out <= 4'b0000;
-//			  else
+		  begin
+		     if (dmg > AI_hp)
+			     ai_out <= 4'b0000;
+			  else
 			     ai_out <= curr_ai_hp - dmg;   
-//		  end
+		  end
     end
 
 endmodule

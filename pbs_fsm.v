@@ -7,27 +7,25 @@ module control(
 	 output reg victory,
 	 output reg loss,
     output reg active_trainer, load_ai_hp, apply_p_damage, apply_ai_damage, target,
-	 output reg state1, state2, state3, state4, state5, state6, state7
+	 output reg state1, state2, state3, state4, state5, state6
     );
 
     reg [5:0] current_state, next_state; 
     
     localparam  S_LOAD_PM         = 4'd0,
-	             S_LOAD_AI_HP       = 4'd1,
-                S_UPDATE_AI_HP    = 4'd2,
-					 S_VIEW_UPDATED_AI_HP = 4'd3,
-                S_UPDATE_P_HP     = 4'd4,
-					 S_VIEW_UPDATED_P_HP = 4'd5,
-					 S_VPHP_TO_LPM = 4'd6,
-                S_VICTORY         = 4'd7,
-                S_LOSS            = 4'd8;
+                S_UPDATE_AI_HP    = 4'd1,
+					 S_VIEW_UPDATED_AI_HP = 4'd2,
+                S_UPDATE_P_HP     = 4'd3,
+					 S_VIEW_UPDATED_P_HP = 4'd4,
+					 S_VPHP_TO_LPM = 4'd5,
+                S_VICTORY         = 4'd6,
+                S_LOSS            = 4'd7;
     
     // Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (current_state)
-                S_LOAD_PM: next_state = S_LOAD_AI_HP;
-					 S_LOAD_AI_HP: next_state =  S_UPDATE_AI_HP;
+                S_LOAD_PM: next_state = S_UPDATE_AI_HP;
                 S_UPDATE_AI_HP: next_state = S_LOAD_PM;
 //					 S_VIEW_UPDATED_AI_HP:
 //					     //begin
@@ -84,36 +82,31 @@ module control(
 		  state4 = 1'b0;
 		  state5 = 1'b0;
 		  state6 = 1'b0;
-		  state7 = 1'b0;
 
         case (current_state)
 		      S_LOAD_PM: begin
 				    state1 = 1'b1;
 					 end
-			   S_LOAD_AI_HP : begin
-				   load_ai_hp = 1'b1;
-				   state2 = 1'b1;
-					end
             S_UPDATE_AI_HP: begin
 				    active_trainer = 1'b0; // 0 selects player as the active trainer
                 target = 1'b1;  // 1 selects the AI's Pokemon as target
                 apply_ai_damage = 1'b1;
-					 state3 = 1'b1;
+					 state2 = 1'b1;
                 end
 			   S_VIEW_UPDATED_AI_HP: begin
-				    state4 = 1'b1;
+				    state3 = 1'b1;
 					 end
             S_UPDATE_P_HP: begin
 				    active_trainer = 1'b1; // 1 selects AI as the active trainer
                 target = 1'b0;  // 0 selects the player's Pokemon as target
                 apply_p_damage = 1'b1;
-					 state5 = 1'b1;
+					 state4 = 1'b1;
                 end
 			   S_VIEW_UPDATED_P_HP: begin
-				    state6 = 1'b1;
+				    state5 = 1'b1;
 					 end
 			   S_VPHP_TO_LPM: begin
-				    state7 = 1'b1;
+				    state6 = 1'b1;
 					 end
             S_VICTORY: begin
                 victory = 1'b1;

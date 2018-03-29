@@ -80,7 +80,7 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 					
 	
 	
-	always @(posedge clk) // Trainer Mux
+	always @(*) // Trainer Mux
 	begin
 		case (actr) // start case statement
 		1'b0:
@@ -170,9 +170,12 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 //		 end
 //	end
 
-   always @(posedge clk) begin
+   always @(*) begin
 	    dmg <= dmg_wire;
 		 accu <= accu_wire;
+	end
+
+   always @(posedge clk) begin
 		 if (!rst) begin
 		     p_hp <= 4'b1111;
 			  AI_hp <= 4'b1111;

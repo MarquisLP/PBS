@@ -4,6 +4,7 @@ module control(
     input go,
     input p_hp,
 	 input ai_dead,
+	 input p_dead,
 	 output reg victory,
 	 output reg loss,
     output reg active_trainer, load_ai_hp, apply_p_damage, apply_ai_damage, target,
@@ -23,16 +24,13 @@ module control(
     begin: state_table 
 	         if (ai_dead)
 			       next_state = S_VICTORY;
+			   else if (p_dead)
+				    next_state = S_LOSS;
 			   else begin
 					case (current_state)
 						 S_LOAD_PM: next_state = S_UPDATE_AI_HP;
-						 S_UPDATE_AI_HP:
-							 begin
-								if (ai_dead)
-									next_state =  S_VICTORY;
-								else
-									next_state = S_LOAD_PM; 
-							 end
+						 S_UPDATE_AI_HP: next_state = S_UPDATE_P_HP; 
+					    S_UPDATE_P_HP: next_state = S_LOAD_PM; 
 	//                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_P_HP;
 	//					 S_VIEW_UPDATED_P_HP:
 	//					     //begin
@@ -50,7 +48,7 @@ module control(
 	//						  //end
 	//				    S_VPHP_TO_LPM: next_state = S_LOAD_PM;
 						 S_VICTORY: next_state = S_VICTORY;
-	//					 S_LOSS: next_state = S_LOSS;
+						 S_LOSS: next_state = S_LOSS;
 						 default:   next_state = S_LOAD_PM;
 				  endcase
 		      end

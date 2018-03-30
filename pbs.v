@@ -17,6 +17,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
 	wire ai_dead_wire;
+	wire p_dead_wire;
 	wire [3:0] curr_ai_hp_wire;
 	wire clk;
 	assign clk = SW[13];
@@ -51,6 +52,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 				  .dmg(move_disp_wire[3:0]),
               .accu(move_disp_wire[7:4]),
 				  .ai_dead(ai_dead_wire),
+				  .p_dead(p_dead_wire),
 				  .moveaccurng(moveaccurng_wire),
 				  );
    
@@ -60,6 +62,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .go(go),
        .p_hp(p_hp_wire),
        .ai_dead(ai_dead_wire),
+		 .p_dead(p_dead_wire),
 	    .victory(LEDG[8]),
 	    .loss(LEDR[17]),
 		 .active_trainer(actr_wire),
@@ -103,7 +106,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 							);
 	
 	hex_display2 p_hp_disp2(
-							.IN(moveaccurng_wire[3:0]), 
+							.IN(p_hp_wire[3:0]), 
 							.ONES_DGT(HEX4[6:0]), 
 							.TENS_DGT(HEX5[6:0])
 							);

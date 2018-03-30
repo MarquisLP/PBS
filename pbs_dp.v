@@ -1,4 +1,4 @@
-module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, ai_dead, moveaccurng);
+module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, ai_dead, p_dead, moveaccurng);
 	input target;
 	input [1:0]p_move;
 	input actr;
@@ -13,6 +13,7 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 	output reg [3:0] dmg;
 	output reg [3:0] accu;
 	output reg ai_dead;
+	output reg p_dead;
 	
 	wire [1:0] airng_wire;
 	wire [3:0] moveaccurng_wire;
@@ -185,6 +186,13 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 		 else
 		     ai_dead <= 1'b0;
 	end
+	
+	always @(*) begin
+	    if (p_hp == 4'b0000)
+		     p_dead <= 1'b1;
+		 else
+		     p_dead <= 1'b0;
+	end
 
    always @(posedge clk) begin
 		 if (!rst) begin
@@ -197,6 +205,14 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 			          AI_hp <= 4'b0000;
 			      else
 		            AI_hp <= AI_hp - dmg_wire;
+			  end
+			  else begin
+			     if ((app_pl_dmg) && (moveaccurng_wire < accu)) begin
+				      if (dmg_wire > p_hp)
+			             p_hp <= 4'b0000;
+			         else
+		                p_hp <= p_hp - dmg_wire;
+				  end
 			  end
 	    end
 	end

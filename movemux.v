@@ -20,7 +20,7 @@ module move_mux(pl_move, dmg, accu);
 			end// case 2
 		2'b11: begin
 			dmg = 4'b1111;
-			accu = 4'b0000;
+			accu = 4'b0101;
 			end // case 3
 		default: begin
 			dmg = 4'b0000;

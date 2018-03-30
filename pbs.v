@@ -16,6 +16,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	
 	wire [3:0] p_hp_wire;
 	wire [3:0] ai_hp_wire;
+	wire ai_dead_wire;
 	wire [3:0] curr_ai_hp_wire;
 	wire clk;
 	assign clk = SW[13];
@@ -37,7 +38,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	pbs_dp dp (
 	
 	           .target(target_wire),
-				  .stop(SW[5]),
+				  .stop(1'b1),
 				  .p_move(SW[1:0]),
 				  .actr(actr_wire),
 				  .load_ai_hp(load_ai_hp_wire),
@@ -49,6 +50,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 				  .AI_hp(ai_hp_wire),
 				  .dmg(move_disp_wire[3:0]),
               .accu(move_disp_wire[7:4]),
+				  .ai_dead(ai_dead_wire),
 				  .moveaccurng(moveaccurng_wire),
 				  );
    
@@ -57,7 +59,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .reset_n(rst),
        .go(go),
        .p_hp(p_hp_wire),
-       .ai_hp(ai_hp_wire),
+       .ai_dead(ai_dead_wire),
 	    .victory(LEDG[8]),
 	    .loss(LEDR[17]),
 		 .active_trainer(actr_wire),
@@ -67,10 +69,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		 .target(target_wire),
 		 .state1(LEDR[0]),
 		 .state2(LEDR[1]),
-		 .state3(LEDR[2]),
-		 .state4(LEDR[3]),
-		 .state5(LEDR[4]),
-		 .state6(LEDR[5])
+		 .state3(LEDR[2])
     );
 	 
 //	 move_mux move_disp (

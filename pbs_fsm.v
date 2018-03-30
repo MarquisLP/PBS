@@ -30,23 +30,7 @@ module control(
 					case (current_state)
 						 S_LOAD_PM: next_state = S_UPDATE_AI_HP;
 						 S_UPDATE_AI_HP: next_state = S_UPDATE_P_HP; 
-					    S_UPDATE_P_HP: next_state = S_LOAD_PM; 
-	//                S_UPDATE_P_HP: next_state = S_VIEW_UPDATED_P_HP;
-	//					 S_VIEW_UPDATED_P_HP:
-	//					     //begin
-	//						      begin
-	//						          if (go)
-	//									    begin
-	//									    if (p_hp == 4'd0)
-	//											next_state = S_LOSS;
-	//										 else
-	//											next_state = S_VPHP_TO_LPM;
-	//										 end
-	//								    else
-	//									    next_state = S_VIEW_UPDATED_P_HP;
-	//								end
-	//						  //end
-	//				    S_VPHP_TO_LPM: next_state = S_LOAD_PM;
+					    S_UPDATE_P_HP: next_state = S_LOAD_PM;
 						 S_VICTORY: next_state = S_VICTORY;
 						 S_LOSS: next_state = S_LOSS;
 						 default:   next_state = S_LOAD_PM;

@@ -16,7 +16,7 @@ module control(
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_MENU            = 4'd0
+    localparam  S_MENU            = 4'd0,
 					 S_LOAD_PM         = 4'd1,
                 S_UPDATE_AI_HP    = 4'd2,
                 S_UPDATE_P_HP     = 4'd3,
@@ -75,7 +75,7 @@ module control(
 		  p_heal = 1'b0;
 		  catch = 1'b0;
 		  catch_fail = 1'b0;
-		  caught = 1'b0
+		  caught = 1'b0;
 		  state1 = 1'b0;
 		  state2 = 1'b0;
 		  state3 = 1'b0;

@@ -33,14 +33,20 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire apply_p_dmg_wire;
 	wire apply_ai_dmg_wire;
 	wire [3:0] moveaccurng_wire;
+	wire p_heal_wire;
+	wire catch_wire;
+	wire catch_fail_wire;
+	wire caught_wire;
 	
 	wire [7:0] move_disp_wire;
 	
 	pbs_dp dp (
 	
 	           .target(target_wire),
+				  .heal(p_heal_wire),
+				  .catch(catch_wire),
 				  .stop(1'b1),
-				  .p_move(SW[1:0]),
+				  .p_move(SW[3:2]),
 				  .actr(actr_wire),
 				  .load_ai_hp(load_ai_hp_wire),
 				  .app_pl_dmg(apply_p_dmg_wire),
@@ -63,6 +69,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .p_hp(p_hp_wire),
        .ai_dead(ai_dead_wire),
 		 .p_dead(p_dead_wire),
+		 .move_op(SW[1:0]),
 	    .victory(LEDG[8]),
 	    .loss(LEDR[17]),
 		 .active_trainer(actr_wire),
@@ -70,9 +77,15 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		 .apply_p_damage(apply_p_dmg_wire),
 		 .apply_ai_damage(apply_ai_dmg_wire),
 		 .target(target_wire),
+		 .p_heal(p_heal_wire),
+		 .catch(catch_wire),
+		 .catch_fail(catch_wire),
+		 .caught(caught_wire),
 		 .state1(LEDR[0]),
 		 .state2(LEDR[1]),
-		 .state3(LEDR[2])
+		 .state3(LEDR[2]),
+		 .state4(LEDR[3]),
+		 .state5(LEDR[4])
     );
 	 
 //	 move_mux move_disp (

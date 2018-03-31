@@ -1,5 +1,7 @@
-module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, ai_dead, p_dead, moveaccurng);
+module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, ai_dead, p_dead, moveaccurng);
 	input target;
+	input heal;
+	input catch;
 	input [1:0]p_move;
 	input actr;
 	input load_ai_hp;
@@ -118,6 +120,12 @@ module pbs_dp(target, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, cl
 		 if (!rst) begin
 		     p_hp <= 4'b1111;
 			  AI_hp <= 4'b1111;
+		 end
+		 else if (heal) begin
+		     if ((p_hp + 4'b0101) > 4'b1111)
+					p_hp <= 4'b1111;
+			  else
+			      p_hp <= p_hp + 4'b0101;
 		 end
 	    else begin
 		     if ((app_ai_dmg) && (moveaccurng_wire < accu)) begin

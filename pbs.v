@@ -85,7 +85,8 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		 .state2(LEDR[1]),
 		 .state3(LEDR[2]),
 		 .state4(LEDR[3]),
-		 .state5(LEDR[4])
+		 .state5(LEDR[4]),
+		 .state6(LEDR[5])
     );
 	 
 //	 move_mux move_disp (

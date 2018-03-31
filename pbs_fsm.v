@@ -81,6 +81,7 @@ module control(
 		  state3 = 1'b0;
 		  state4 = 1'b0;
 		  state5 = 1'b0;
+		  state6 = 1'b0;
 
         case (current_state)
 		      S_MENU: begin

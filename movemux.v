@@ -11,16 +11,16 @@ module move_mux(pl_move, dmg, accu);
 			accu = 4'b1111;
 			end
 		2'b01: begin
-			dmg = 4'b0111;
+			dmg = 4'b0101;
 			accu = 4'b1100;
 			end
 		2'b10:  begin
-			dmg = 4'b1010;
-			accu = 4'b1010;
+			dmg = 4'b0111;
+			accu = 4'b1001;
 			end// case 2
 		2'b11: begin
-			dmg = 4'b1111;
-			accu = 4'b0101;
+			dmg = 4'b1010;
+			accu = 4'b0111;
 			end // case 3
 		default: begin
 			dmg = 4'b0000;

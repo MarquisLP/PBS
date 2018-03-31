@@ -5,6 +5,8 @@ module control(
     input p_hp,
 	 input ai_dead,
 	 input p_dead,
+	 input move_op,
+	 input catch_success,
 	 output reg victory,
 	 output reg loss,
     output reg active_trainer, load_ai_hp, apply_p_damage, apply_ai_damage, target,
@@ -13,11 +15,19 @@ module control(
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_LOAD_PM         = 4'd0,
-                S_UPDATE_AI_HP    = 4'd1,
-                S_UPDATE_P_HP     = 4'd2,
-                S_VICTORY         = 4'd3,
-                S_LOSS            = 4'd4;
+    localparam  S_MENU            = 4'd0
+					 S_LOAD_PM         = 4'd1,
+                S_UPDATE_AI_HP    = 4'd2,
+                S_UPDATE_P_HP     = 4'd3,
+                S_VICTORY         = 4'd4,
+                S_LOSS            = 4'd5,
+					 S_P_HEAL          = 4'd6,
+					 S_CATCH           = 4'd7,
+					 S_FAIL_CATCH      = 4'd8,
+					 S_CAUGHT          = 4'd9,
+					 MV_BATTLE         = 2'b00,
+					 MV_HEAL           = 2'b01,
+					 MV_CATCH          = 2'b10;
     
     // Next state logic aka our state table
     always@(*)
@@ -28,11 +38,22 @@ module control(
 				    next_state = S_LOSS;
 			   else begin
 					case (current_state)
+					    S_MENU: begin
+						     case (move_op)
+							      MV_BATTLE: next_state = S_LOAD_PM;
+									MV_HEAL: next_state = S_P_HEAL;
+									MV_CATCH: next_state = S_CATCH;
+							  endcase
+						 end
 						 S_LOAD_PM: next_state = S_UPDATE_AI_HP;
 						 S_UPDATE_AI_HP: next_state = S_UPDATE_P_HP; 
 					    S_UPDATE_P_HP: next_state = S_LOAD_PM;
 						 S_VICTORY: next_state = S_VICTORY;
 						 S_LOSS: next_state = S_LOSS;
+						 S_P_HEAL: next_state = S_UPDATE_P_HP;
+						 S_CATCH: next_state = move_success ? S_CAUGHT : S_FAIL_CATCH;
+						 S_CAUGHT: next_state = S_CAUGHT;
+						 S_FAIL_CATCH: next_state = S_UPDATE_P_HP;
 						 default:   next_state = S_LOAD_PM;
 				  endcase
 		      end

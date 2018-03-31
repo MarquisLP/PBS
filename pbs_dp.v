@@ -1,4 +1,4 @@
-module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, ai_dead, p_dead, moveaccurng);
+module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, app_ai_dmg, clk, rst, p_hp, AI_hp, dmg, accu, ai_dead, p_dead, moveaccurng, catch_success);
 	input target;
 	input heal;
 	input catch;
@@ -16,6 +16,7 @@ module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, a
 	output reg [3:0] accu;
 	output reg ai_dead;
 	output reg p_dead;
+	output reg catch_success;
 	
 	wire [1:0] airng_wire;
 	wire [3:0] moveaccurng_wire;
@@ -23,6 +24,7 @@ module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, a
 	reg [1:0] actr_wire;
 	wire [3:0] dmg_wire;
 	wire [3:0] accu_wire;
+	wire [3:0] catch_wire;
 	reg [3:0] curr_ai_hp;
 	reg [3:0] p_out;
 	reg [3:0] ai_out;
@@ -78,6 +80,34 @@ module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, a
 				.random(moveaccurng_wire[3])
 				);
 	
+	GARO catch_rng1(
+	         .stop(stop),
+				.clk(clk),
+				.reset(rst),
+				.random(catch_wire[0])
+				);
+	
+	GARO catch_rng2(
+	         .stop(stop),
+				.clk(clk),
+				.reset(rst),
+				.random(catch_wire[1])
+				);
+	
+	GARO catch_rng3(
+	         .stop(stop),
+				.clk(clk),
+				.reset(rst),
+				.random(catch_wire[2])
+				);
+	
+	GARO catch_rng4(
+	         .stop(stop),
+				.clk(clk),
+				.reset(rst),
+				.random(catch_wire[3])
+				);
+	
 	move_mux mm1(
 				.pl_move(actr_wire),
 				.dmg(dmg_wire),
@@ -115,6 +145,14 @@ module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, a
 		 else
 		     p_dead <= 1'b0;
 	end
+	
+	always @(posedge clk) begin
+	    catch_success = 1'b0;
+	    if (catch) begin
+		      if (catch_wire > AI_hp)
+				    catch_success = 1'b1;
+		 end
+	end
 
    always @(posedge clk) begin
 		 if (!rst) begin
@@ -122,7 +160,7 @@ module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, a
 			  AI_hp <= 4'b1111;
 		 end
 		 else if (heal) begin
-		     if ((p_hp + 4'b0101) > 4'b1111)
+		     if ((p_hp + 4'b0101) < p_hp)
 					p_hp <= 4'b1111;
 			  else
 			      p_hp <= p_hp + 4'b0101;

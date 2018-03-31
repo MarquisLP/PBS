@@ -34,9 +34,10 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire apply_ai_dmg_wire;
 	wire [3:0] moveaccurng_wire;
 	wire p_heal_wire;
+	wire catch_success_wire;
 	wire catch_wire;
-	wire catch_fail_wire;
-	wire caught_wire;
+	wire cacatch_fail_led_wire;
+	wire caught_led_wire;
 	
 	wire [7:0] move_disp_wire;
 	
@@ -60,6 +61,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 				  .ai_dead(ai_dead_wire),
 				  .p_dead(p_dead_wire),
 				  .moveaccurng(moveaccurng_wire),
+				  .catch_success(catch_success_wire)
 				  );
    
 	control fsm (
@@ -70,6 +72,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .ai_dead(ai_dead_wire),
 		 .p_dead(p_dead_wire),
 		 .move_op(SW[1:0]),
+		 .catch_success(catch_success_wire),
 	    .victory(LEDG[8]),
 	    .loss(LEDR[17]),
 		 .active_trainer(actr_wire),
@@ -79,8 +82,8 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		 .target(target_wire),
 		 .p_heal(p_heal_wire),
 		 .catch(catch_wire),
-		 .catch_fail(catch_wire),
-		 .caught(caught_wire),
+		 .catch_fail(LEDR[16:9]),
+		 .caught(LEDG[7:0]),
 		 .state1(LEDR[0]),
 		 .state2(LEDR[1]),
 		 .state3(LEDR[2]),

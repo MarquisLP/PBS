@@ -117,10 +117,10 @@ module control(
 					 state6 = 1'b1;
 				    end
 				S_FAIL_CATCH : begin
-				    catch_fail = 1'b1;
+				    catch_fail = 17'b11111111111111111;
 				    end
 			   S_CAUGHT: begin
-				    caught = 1'b1;
+				    caught = 8'b11111111;
 				    end
             
         // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block

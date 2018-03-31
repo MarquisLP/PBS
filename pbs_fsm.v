@@ -11,12 +11,12 @@ module control(
 	 output reg loss,
     output reg active_trainer, load_ai_hp, apply_p_damage, apply_ai_damage, target,
 	 output reg p_heal, catch, catch_fail, caught, 
-	 output reg state1, state2, state3, state4, state5, state6
+	 output reg state1, state2, state3, state4, state5
     );
 
     reg [5:0] current_state, next_state; 
     
-    localparam  S_MENU            = 4'd0,
+    localparam  S_MENU            = 4'd0
 					 S_LOAD_PM         = 4'd1,
                 S_UPDATE_AI_HP    = 4'd2,
                 S_UPDATE_P_HP     = 4'd3,
@@ -48,7 +48,7 @@ module control(
 						 end
 						 S_LOAD_PM: next_state = S_UPDATE_AI_HP;
 						 S_UPDATE_AI_HP: next_state = S_UPDATE_P_HP; 
-					    S_UPDATE_P_HP: next_state = S_LOAD_PM;
+					    S_UPDATE_P_HP: next_state = S_MENU;
 						 S_VICTORY: next_state = S_VICTORY;
 						 S_LOSS: next_state = S_LOSS;
 						 S_P_HEAL: next_state = S_UPDATE_P_HP;
@@ -75,32 +75,28 @@ module control(
 		  p_heal = 1'b0;
 		  catch = 1'b0;
 		  catch_fail = 1'b0;
-		  caught = 1'b0;
+		  caught = 1'b0
 		  state1 = 1'b0;
 		  state2 = 1'b0;
 		  state3 = 1'b0;
 		  state4 = 1'b0;
 		  state5 = 1'b0;
-		  state6 = 1'b0;
 
         case (current_state)
-		      S_MENU: begin
-				    state1 = 1'b1;
-					 end
 		      S_LOAD_PM: begin
-				    state2 = 1'b1;
+				    state1 = 1'b1;
 					 end
             S_UPDATE_AI_HP: begin
 				    active_trainer = 1'b0; // 0 selects player as the active trainer
                 target = 1'b1;  // 1 selects the AI's Pokemon as target
                 apply_ai_damage = 1'b1;
-					 state3 = 1'b1;
+					 state2 = 1'b1;
                 end
             S_UPDATE_P_HP: begin
 				    active_trainer = 1'b1; // 1 selects AI as the active trainer
                 target = 1'b0;  // 0 selects the player's Pokemon as target
                 apply_p_damage = 1'b1;
-					 state4 = 1'b1;
+					 state3 = 1'b1;
                 end
             S_VICTORY: begin
                 victory = 1'b1;
@@ -110,11 +106,11 @@ module control(
                 end
 			   S_P_HEAL: begin
 				    p_heal = 1'b1;
-					 state5 = 1'b1;
+					 state4 = 1'b1;
 				    end
 			   S_CATCH : begin
 				    catch = 1'b1;
-					 state6 = 1'b1;
+					 state5 = 1'b1;
 				    end
 				S_FAIL_CATCH : begin
 				    catch_fail = 1'b1;
@@ -131,7 +127,7 @@ module control(
     always@(posedge clk)
     begin: state_FFs
         if(!reset_n)
-            current_state <= S_LOAD_PM;
+            current_state <= S_MENU;
         else
             current_state <= next_state;
     end // state_FFS

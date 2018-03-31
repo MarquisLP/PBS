@@ -71,7 +71,7 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
        .p_hp(p_hp_wire),
        .ai_dead(ai_dead_wire),
 		 .p_dead(p_dead_wire),
-		 .move_op(SW[1:0]),
+		 .move_op(SW[17:16]),
 		 .catch_success(catch_success_wire),
 	    .victory(LEDG[8]),
 	    .loss(LEDR[17]),

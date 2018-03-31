@@ -146,7 +146,7 @@ module pbs_dp(target, heal, catch, stop, p_move, actr, load_ai_hp, app_pl_dmg, a
 		     p_dead <= 1'b0;
 	end
 	
-	always @(posedge clk) begin
+	always @(*) begin
 	    catch_success = 1'b0;
 	    if (catch) begin
 		      if (catch_wire > AI_hp)

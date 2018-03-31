@@ -5,7 +5,7 @@ module control(
     input p_hp,
 	 input ai_dead,
 	 input p_dead,
-	 input move_op,
+	 input [1:0] move_op,
 	 input catch_success,
 	 output reg victory,
 	 output reg loss,
@@ -13,7 +13,7 @@ module control(
 	 output reg p_heal, catch, catch_fail, caught, 
 	 output reg state1, state2, state3, state4, state5, state6
     );
-
+	 
     reg [5:0] current_state, next_state; 
     
     localparam  S_MENU            = 4'd0,
@@ -27,8 +27,8 @@ module control(
 					 S_FAIL_CATCH      = 4'd8,
 					 S_CAUGHT          = 4'd9,
 					 MV_BATTLE         = 2'b00,
-					 MV_HEAL           = 2'b01,
-					 MV_CATCH          = 2'b10;
+					 MV_HEAL           = 2'b11,
+					 MV_CATCH          = 2'b01;
     
     // Next state logic aka our state table
     always@(*)
@@ -40,11 +40,14 @@ module control(
 			   else begin
 					case (current_state)
 					    S_MENU: begin
-						     case (move_op)
-							      MV_BATTLE: next_state = S_LOAD_PM;
-									MV_HEAL: next_state = S_P_HEAL;
-									MV_CATCH: next_state = S_CATCH;
-							  endcase
+						     if (move_op == 2'b00)
+							     next_state = S_LOAD_PM;
+				           else if (move_op == 2'b11)
+							     next_state = S_P_HEAL;
+							  else if (move_op == 2'b01)
+							     next_state = S_CATCH;
+							  else
+							     next_state = S_MENU;
 						 end
 						 S_LOAD_PM: next_state = S_UPDATE_AI_HP;
 						 S_UPDATE_AI_HP: next_state = S_UPDATE_P_HP; 

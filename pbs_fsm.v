@@ -10,6 +10,7 @@ module control(
 	 output reg victory,
 	 output reg loss,
     output reg active_trainer, load_ai_hp, apply_p_damage, apply_ai_damage, target,
+	 output reg p_heal, catch, catch_fail, caught, 
 	 output reg state1, state2, state3
     );
 
@@ -51,7 +52,7 @@ module control(
 						 S_VICTORY: next_state = S_VICTORY;
 						 S_LOSS: next_state = S_LOSS;
 						 S_P_HEAL: next_state = S_UPDATE_P_HP;
-						 S_CATCH: next_state = move_success ? S_CAUGHT : S_FAIL_CATCH;
+						 S_CATCH: next_state = catch_success ? S_CAUGHT : S_FAIL_CATCH;
 						 S_CAUGHT: next_state = S_CAUGHT;
 						 S_FAIL_CATCH: next_state = S_UPDATE_P_HP;
 						 default:   next_state = S_LOAD_PM;
@@ -71,6 +72,10 @@ module control(
         apply_ai_damage = 1'b0;
 		  victory = 1'b0;
 		  loss = 1'b0;
+		  p_heal = 1'b0;
+		  catch = 1'b0;
+		  catch_fail = 1'b0;
+		  caught = 1'b0
 		  state1 = 1'b0;
 		  state2 = 1'b0;
 		  state3 = 1'b0;
@@ -97,6 +102,18 @@ module control(
             S_LOSS: begin
                 loss = 1'b1;
                 end
+			   S_P_HEAL: begin
+				    p_heal = 1'b1;
+				    end
+			   S_CATCH : begin
+				    catch = 1'b1;
+				    end
+				S_FAIL_CATCH : begin
+				    catch_fail = 1'b1;
+				    end
+			   S_CAUGHT: begin
+				    caught = 1'b1;
+				    end
             
         // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
         endcase

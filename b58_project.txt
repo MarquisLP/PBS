@@ -126,3 +126,24 @@ significant simplications in our FSM and Datapath. However, the HP registers
 still behave oddly, so further debugging will need to be done.
 At this point, implementing our stretch goals, such as multiple Pokemon and playing
 music, seems highly unlikely.
+
+Week 3: We spent the early part of the week attempting to fix the HP problem that
+we had from Week 2, but to no avail. On Thursday we went to Professor Harrington
+for help. He revealed that our problem was most likely with the FSM, and suggested
+that we run through the states manually using keys to make sure. Upon doing that,
+we realized that the problem came from CLOCK_50 running through all of our states
+too quickly, so we decided to change our clock input into a key. After doing that,
+the HP problem was fixed.
+After that, in the lab, we successfully implemented all of the base game mechanics:
+choosing moves, applying damage to the AI's Pokemon based on RNG, and doing the
+same for the AI.
+During extra lab time on Saturday, we also implemented a few new features/stretch
+goals: adding a 'menu' state, where the player can choose to attack, heal, or
+attempt to catch the Pokemon. The new heal and catch states worked out just as
+planned, but we experienced some oddities with the game going to the wrong state.
+This doesn't happen everytime time, though, so we plan on using our remaining time
+to check if these issues were just caused by a finicky board. If the board isn't
+the problem, then we'll use the time to debug whatever issues are left.
+Our last stretch goal is to display the option that the player selected on the menu
+state, using hexes. This would require making a unique hex decoder that can output
+letters beyond the usual hexadecimal range (such as 'H' and 'L' for 'heal').

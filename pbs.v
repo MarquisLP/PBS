@@ -20,9 +20,9 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 	wire p_dead_wire;
 	wire [3:0] curr_ai_hp_wire;
 	wire clk;
-	assign clk = SW[13];
-	wire go;
-	assign go = SW[17];
+	assign clk = ~KEY[1];
+//	wire go;
+//	assign go = SW[17];
 	
 	wire rst;
 	assign rst = SW[12];
@@ -82,8 +82,8 @@ module pbs(SW, LEDR, LEDG, CLOCK_50, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HE
 		 .target(target_wire),
 		 .p_heal(p_heal_wire),
 		 .catch(catch_wire),
-		 .catch_fail(LEDR[16:9]),
-		 .caught(LEDG[7:0]),
+		 .catch_fail(LEDR[16]),
+		 .caught(LEDG[7]),
 		 .state1(LEDR[0]),
 		 .state2(LEDR[1]),
 		 .state3(LEDR[2]),

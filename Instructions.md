@@ -13,11 +13,12 @@
 * **LEDR 17** - indicates that your Pokemon has fainted (game over)
 * **SW 1 & 0** - used to select your action (refer to State 1 below)
 * **SW 3 & 2** - used to select your Pokemon's attack (refer to state 2 below)
+* **SW 12** - turn *off* and click KEY 1 to reset the game (keep it turned on while the game is happening)
 * **KEY 0** - used to step through states
 
 ## States
 
-This game operates in 6 states, which you traverse by clicking KEY0.
+This game operates in 6 states, which you traverse by clicking KEY1.
 The states are as follows:
 
 1. **Menu** - use switches 1 and 0 to select what action you will take. The available actions are:

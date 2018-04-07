@@ -50,6 +50,7 @@ Features:
     * Stretch stretch goal - players can choose between multiple songs before entering battle
 
 Video URL:
+https://www.youtube.com/watch?v=RbT70bZT7j4
 
 Code URL (please upload a copy of this file to your repository at the end of the project as well, it will
 serve as a useful resource for future development):

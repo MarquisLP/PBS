@@ -154,9 +154,8 @@ Week 4: Before the lab, we re-ran our game to check if the bug from the previous
 week still persisted. Everything worked out smoothly, so we concluded that the bug
 must have been a problem with the specific DE2 board that we used in the lab.
 Afterwards, we considered implementing the menu hex display that we thought of last
-week. However, we realized that there was no way we'd have enough time to write the
-code and debug it in time for the presentation, so we decided to keep our codebase
-as it is.
+week. However, we realized that there was no way we'd be able to write the code and
+debug it in time for the presentation, so we decided to keep our codebase as it is.
 Our last order of business was to give the game one last thorough test to make
 sure everything was in order. Thankfully, no new issues cropped up, so we were able
 to set everything up quite easily during presentation day.

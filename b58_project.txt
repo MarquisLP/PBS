@@ -36,18 +36,22 @@ Project Title:Pokemon Battle Simulator
 Project Description: An arcade-style Pokemon RPG battle, player vs AI.
 
 Features:
-* Hit rates decided by RNG
-    * HP displayed on hexes
-    * Uses counters to decrease HP upon hit
-* Player has one Pokemon
-    * Stretch goal - player has up to six Pokemon, and can switch  either upon fainting or via switches
-* Pokemon has one attack that does 1 damage
-    * Stretch goal - multiple moves with varying damage points
-* AI also has one Pokemon, and is also subject to RNG for hit rate
-    * Stretch goal - AI has six Pokemon, which results in a typical 6 on 6 Pokemon battle
-* Stretch goal - type advantages: Fire vs Water vs Grass, 2x damage for super effective, 1/2 damage for not very effective
-* Stretch goal - battle music using speakers
-    * Stretch stretch goal - players can choose between multiple songs before entering battle
+* Player and AI both have one Pokemon
+    * Both Pokemon's HP are displayed on the hexes
+    * Each Pokemon has 4 attacks with differing damage and accuracy rates
+    * Player uses switches to select their attacks
+    * AI chooses its attacks randomly based on RNG
+* Player uses switches to choose to between fighting, healing, or catching at the beginning of each turn
+    * Healing always increments player's HP by 5
+    * Catch works by generating a random number and comparing it to the AI Pokemon's current HP. If the random value is bigger, then the catch is successful.
+* Victory is achieved by attacking until the AI's Pokemon's HP drops to 0, or by successfully capturing the Pokemon
+* Game Over happens when the player's Pokemon's HP drops to 0
+
+Features originally planned, but that had to be cut:
+    * Player and AI have up to six Pokemon, and can switch either upon fainting or via switches
+    * Type advantages: Fire vs Water vs Grass, 2x damage for super effective, 1/2 damage for not very effective
+    * Battle music using speakers
+        * Players can use switches to choose between multiple songs before entering battle
 
 Video URL:
 https://www.youtube.com/watch?v=RbT70bZT7j4
@@ -63,12 +67,14 @@ Proposal
 
 What do you plan to have completed by the end of the first lab session?:
 RNG for the player's and AI's attack hit rates. Damage counter. HP hexes.
+Reality: Just the RNG module.
 
 What do you plan to have completed by the end of the second lab session?: FSM for battle flow. Datapath/ALU for HP and damage calculations. If there is extra time, begin stretch goals: multiple attacks, multiple Pokemon for player and AI.
-,
+Reality: Datapath, FSM, and top-level module. Multiple attacks implemented successfuly. Multiple Pokemon had to be skipped over, though.
 
 What do you plan to have completed by the end of the third lab session?:
 Stretch goals: music/speakers, music selection before battle
+Reality: Base game working along with new features: healing mode and capture mode.
 
 What is your backup plan if things don't work out as planned?
 Just get basic 1v1 battle working, possibly with one song playing.
@@ -76,6 +82,7 @@ Just get basic 1v1 battle working, possibly with one song playing.
 What hardware will you need beyond the DE2 board 
 (be sure to e-mail Brian if it's anything beyond the basics to make sure there's enough to go around)
 Speakers, and possibly breadboards for LEDs that represent the Pokemon.
+Reality: Didn't use any extra hardware.
 
 Motivations
 -----------
